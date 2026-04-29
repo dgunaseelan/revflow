@@ -387,6 +387,38 @@ a{color:var(--accent-lt);text-decoration:none}a:hover{text-decoration:underline}
         </div>
       </div>
 
+      <!-- Prerequisites -->
+      <div class="prereq-box" style="margin-bottom:18px">
+        <h3>&#9889; Prerequisites for RevFlow</h3>
+        <div class="prereq-item">
+          <div class="prereq-num">1</div>
+          <div><strong>Slack Business+ or Enterprise+</strong> — Required for Slackbot (AI agent). Business+ has 15 AI conversations/week per user; Enterprise+ is unlimited.</div>
+        </div>
+        <div class="prereq-item">
+          <div class="prereq-num">2</div>
+          <div>
+            <strong>Salesforce Base Edition</strong>
+            <ul style="margin:4px 0 0 16px;font-size:.8rem;line-height:1.5;list-style:none;padding:0">
+              <li><span style="color:var(--green);font-weight:700">&#9679;</span> <strong>Enterprise ($175/user/mo)</strong> — Recommended. Unlimited API calls.</li>
+              <li><span style="color:var(--yellow);font-weight:700">&#9679;</span> <strong>Pro Suite ($100/user/mo)</strong> — Viable. 5K API calls/day. Needs RCG validation.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="prereq-item">
+          <div class="prereq-num">3</div>
+          <div>
+            <strong>Revenue Cloud Growth SKU (+$150/user/mo)</strong> — Add-on for native CPQ, product catalog, subscriptions.
+            <ul style="margin:4px 0 0 16px;font-size:.8rem;line-height:1.5;list-style:none;padding:0">
+              <li><span style="color:var(--yellow);font-weight:700">&#9679;</span> Pro Suite + RCG = <strong>$250/user/mo</strong></li>
+              <li><span style="color:var(--green);font-weight:700">&#9679;</span> Enterprise + RCG = <strong>$325/user/mo</strong></li>
+            </ul>
+          </div>
+        </div>
+        <div style="margin-top:12px;text-align:center">
+          <a href="#" onclick="switchToQuestions();return false" style="font-size:.82rem;font-weight:600;color:var(--accent)">Learn more in the Editions &amp; Prerequisites tab &rarr;</a>
+        </div>
+      </div>
+
       <!-- Step nav -->
       <div class="step-nav">
         <div></div>
@@ -418,8 +450,7 @@ a{color:var(--accent-lt);text-decoration:none}a:hover{text-decoration:underline}
             <div class="prog-steps" style="max-width:420px;margin:0 auto">
               <div class="prog-item"><div class="prog-check done">&#10003;</div> Verified your Slack workspace</div>
               <div class="prog-item"><div class="prog-check done">&#10003;</div> Created your revenue workspace</div>
-              <div class="prog-item"><div class="prog-check active">&#9679;</div> Configuring product catalog &amp; quoting...</div>
-              <div class="prog-item"><div class="prog-check pending">&#9679;</div> Setting up your team</div>
+              <div class="prog-item"><div class="prog-check active">&#9679;</div> Setting up your admin account...</div>
               <div class="prog-item"><div class="prog-check pending">&#9679;</div> Connecting to Slack</div>
             </div>
           </div>
@@ -529,8 +560,8 @@ sequenceDiagram
         <button class="step-nav-btn secondary" onclick="goStep(2)">&larr; Back</button>
         <button class="step-nav-btn primary" onclick="goStep(4)">Next: Slack Authentication &rarr;</button>
       </div>
-      <h2>Step 3: User Provisioning (API-Only Integration Users)</h2>
-      <p class="desc">The RevFlow Middleware creates API-only Integration Users in the newly provisioned org. The customer never sees a Salesforce user being created — they just see "Configuring your team..."</p>
+      <h2>Step 3: Admin User Provisioning</h2>
+      <p class="desc">The RevFlow Middleware creates an API-only Integration User for the workspace admin. The admin will then set up other team members through Slackbot or the RevFlow Seamless App.</p>
 
       <!-- Customer View (full width) -->
       <div class="panel" style="margin-bottom:18px">
@@ -541,9 +572,9 @@ sequenceDiagram
         </div>
         <div class="panel-body">
           <div class="sim-progress">
-            <h3>Configuring your team...</h3>
-            <p>Setting up secure access for your workspace members.</p>
-            <div class="prog-track"><div class="prog-fill" style="width:75%;background:var(--accent)"></div></div>
+            <h3>Setting up your admin account...</h3>
+            <p>Configuring secure access for the workspace administrator.</p>
+            <div class="prog-track"><div class="prog-fill" style="width:85%;background:var(--accent)"></div></div>
             <div class="user-viz" style="margin-top:16px;max-width:480px;margin-left:auto;margin-right:auto">
               <div class="user-row">
                 <div class="user-avatar jit">RC</div>
@@ -553,15 +584,8 @@ sequenceDiagram
                 </div>
                 <span class="pill pg">Ready</span>
               </div>
-              <div class="user-row">
-                <div class="user-avatar jit">JH</div>
-                <div class="user-detail">
-                  <div class="name">Jordan Hayes</div>
-                  <div class="meta">jordan@acmecorp.com &middot; Team Member</div>
-                </div>
-                <span class="pill pb">Setting up...</span>
-              </div>
             </div>
+            <p style="margin-top:12px;font-size:.78rem;color:var(--text-tert);text-align:center"><em>You can invite team members later from Slack via Slackbot or the RevFlow app.</em></p>
           </div>
         </div>
       </div>
@@ -756,32 +780,97 @@ sequenceDiagram
           <h3>Customer View</h3>
           <span class="pill pb">What They See</span>
         </div>
-        <div class="panel-body">
-          <div class="sim-slack" style="max-width:640px;margin:0 auto">
-            <div class="sim-slack-bar">
+        <div class="panel-body" style="padding:0">
+          <!-- Full Slack Window -->
+          <div style="background:#1a1d21;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.08)">
+            <!-- Title bar -->
+            <div style="background:#1a1d21;padding:8px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.1)">
               <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-              <span style="color:rgba(255,255,255,.5);font-size:.72rem;margin-left:8px">Acme Corp &middot; #revflow</span>
+              <span style="color:rgba(255,255,255,.7);font-size:.78rem;font-weight:600;margin-left:8px">Slack — Acme Corp</span>
             </div>
-            <div class="sim-slack-body">
-              <div class="sim-slack-msg">
-                <div class="sender">RevFlow</div>
-                <div class="msg-text">
-                  Welcome to RevFlow, Acme Corp! Your revenue workspace is ready.<br><br>
-                  Here's what you can do:<br>
-                  &bull; Create quotes and send them for approval<br>
-                  &bull; Browse and manage your product catalog<br>
-                  &bull; Set up pricing rules and discounts<br>
-                  &bull; Track deals and revenue metrics
-                </div>
+            <!-- Slack layout: sidebar + main -->
+            <div style="display:flex;min-height:380px">
+              <!-- Sidebar -->
+              <div style="width:220px;background:#1a1d21;border-right:1px solid rgba(255,255,255,.08);padding:14px 0;flex-shrink:0">
+                <div style="padding:0 14px 12px;font-size:.72rem;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px">Acme Corp</div>
+                <div style="padding:4px 14px;font-size:.76rem;color:rgba(255,255,255,.4)">&#128269; Search Acme Corp</div>
+                <div style="margin-top:14px;padding:0 14px 6px;font-size:.68rem;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.5px">Channels</div>
+                <div style="padding:3px 14px;font-size:.76rem;color:rgba(255,255,255,.5)"># general</div>
+                <div style="padding:3px 14px;font-size:.76rem;color:rgba(255,255,255,.5)"># sales-team</div>
+                <div style="padding:3px 14px;font-size:.76rem;background:rgba(99,83,236,.2);color:#fff;font-weight:600;border-radius:4px;margin:0 6px"># revflow <span style="background:var(--accent);color:#fff;font-size:.6rem;padding:1px 5px;border-radius:8px;margin-left:4px">3</span></div>
+                <div style="padding:3px 14px;font-size:.76rem;color:rgba(255,255,255,.5)"># random</div>
+                <div style="margin-top:14px;padding:0 14px 6px;font-size:.68rem;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.5px">Apps</div>
+                <div style="padding:3px 14px;font-size:.76rem;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:6px"><span style="width:16px;height:16px;border-radius:4px;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;font-size:.55rem;color:#fff;font-weight:700">RF</span> RevFlow</div>
+                <div style="padding:3px 14px;font-size:.76rem;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:6px"><span style="width:16px;height:16px;border-radius:4px;background:#e8912d;display:inline-flex;align-items:center;justify-content:center;font-size:.55rem;color:#fff;font-weight:700">&#9889;</span> Slackbot</div>
+                <div style="margin-top:14px;padding:0 14px 6px;font-size:.68rem;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.5px">Direct Messages</div>
+                <div style="padding:3px 14px;font-size:.76rem;color:rgba(255,255,255,.5)">&#128994; Rita Chen (you)</div>
+                <div style="padding:3px 14px;font-size:.76rem;color:rgba(255,255,255,.5)">&#9898; Jordan Hayes</div>
               </div>
-              <div class="sim-slack-actions">
-                <button class="sim-slack-btn">Create a Quote</button>
-                <button class="sim-slack-btn sec">Browse Catalog</button>
-                <button class="sim-slack-btn sec">Set Up Products</button>
+              <!-- Main chat area -->
+              <div style="flex:1;display:flex;flex-direction:column;background:#222529">
+                <!-- Channel header -->
+                <div style="padding:10px 18px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between">
+                  <div>
+                    <span style="font-size:.88rem;font-weight:700;color:#fff"># revflow</span>
+                    <span style="font-size:.7rem;color:rgba(255,255,255,.35);margin-left:8px">Revenue management for Acme Corp</span>
+                  </div>
+                  <div style="display:flex;gap:12px;font-size:.72rem;color:rgba(255,255,255,.4)">&#128276; &#128206; &#9881;</div>
+                </div>
+                <!-- Messages -->
+                <div style="flex:1;padding:18px;overflow-y:auto">
+                  <!-- RevFlow bot message -->
+                  <div style="display:flex;gap:10px;margin-bottom:16px">
+                    <div style="width:36px;height:36px;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;font-weight:700;flex-shrink:0">RF</div>
+                    <div style="flex:1">
+                      <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px">
+                        <span style="font-size:.82rem;font-weight:700;color:#fff">RevFlow</span>
+                        <span style="font-size:.65rem;padding:1px 5px;border-radius:3px;background:rgba(99,83,236,.2);color:var(--accent);font-weight:500">APP</span>
+                        <span style="font-size:.65rem;color:rgba(255,255,255,.3)">Today at 2:34 PM</span>
+                      </div>
+                      <div style="font-size:.82rem;color:rgba(255,255,255,.8);line-height:1.6">
+                        &#128075; <strong>Welcome to RevFlow, Rita!</strong> Your revenue workspace for <strong>Acme Corp</strong> is ready.<br><br>
+                        Here's what you can do right away:<br>
+                        &bull; Create quotes and send them for approval<br>
+                        &bull; Browse and manage your product catalog<br>
+                        &bull; Set up pricing rules and discounts<br>
+                        &bull; Invite team members to RevFlow
+                      </div>
+                      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+                        <button style="background:var(--accent);color:#fff;border:none;border-radius:4px;padding:7px 16px;font-size:.76rem;font-weight:600;cursor:pointer">&#128196; Create a Quote</button>
+                        <button style="background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);border-radius:4px;padding:7px 16px;font-size:.76rem;font-weight:500;cursor:pointer">&#128230; Browse Catalog</button>
+                        <button style="background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7);border-radius:4px;padding:7px 16px;font-size:.76rem;font-weight:500;cursor:pointer">&#128101; Invite Team</button>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Rita's reply -->
+                  <div style="display:flex;gap:10px;margin-bottom:16px">
+                    <div style="width:36px;height:36px;border-radius:6px;background:#4a9c6d;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:#fff;font-weight:700;flex-shrink:0">RC</div>
+                    <div style="flex:1">
+                      <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px">
+                        <span style="font-size:.82rem;font-weight:700;color:#fff">Rita Chen</span>
+                        <span style="font-size:.65rem;color:rgba(255,255,255,.3)">Today at 2:35 PM</span>
+                      </div>
+                      <div style="font-size:.82rem;color:rgba(255,255,255,.8);line-height:1.6">
+                        This looks great! Let me start by setting up our product catalog &#128640;
+                      </div>
+                      <div style="display:flex;gap:6px;margin-top:6px">
+                        <span style="font-size:.72rem;padding:2px 8px;border-radius:12px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);cursor:pointer">&#128077; 2</span>
+                        <span style="font-size:.72rem;padding:2px 8px;border-radius:12px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);cursor:pointer">&#128640; 1</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Message input -->
+                <div style="padding:10px 18px;border-top:1px solid rgba(255,255,255,.08)">
+                  <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between">
+                    <span style="font-size:.78rem;color:rgba(255,255,255,.3)">Message #revflow</span>
+                    <div style="display:flex;gap:10px;font-size:.78rem;color:rgba(255,255,255,.3)">&#128247; &#128206; &#128515; &#10148;</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div style="margin-top:14px;text-align:center">
+          <div style="margin:14px 20px 0;text-align:center">
             <a href="https://rev-slack-flow-11d10afb42e6.herokuapp.com/demo/workspace/acme-corp/home" target="_blank" style="font-size:.82rem;font-weight:600">Open the full Slack App Mock &rarr;</a>
           </div>
         </div>

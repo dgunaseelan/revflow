@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RevFlow — New Customer Onboarding Mock</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root {
+  --bg: #f8f9fb;
+  --bg-card: #ffffff;
+  --bg-hover: #f0f2f5;
+  --bg-stripe: #f5f6f8;
+  --border: #e2e5ea;
+  --border-light: #d0d5dd;
+  --text: #1a1d23;
+  --text-sec: #4b5563;
+  --text-tert: #8892a2;
+  --accent: #6353ec;
+  --accent-lt: #5046c8;
+  --accent-bg: rgba(99,83,236,.07);
+  --green: #16a368;
+  --green-bg: rgba(22,163,104,.07);
+  --green-bd: rgba(22,163,104,.3);
+  --yellow: #ca8a04;
+  --yellow-bg: rgba(202,138,4,.07);
+  --yellow-bd: rgba(202,138,4,.28);
+  --red: #dc3545;
+  --red-bg: rgba(220,53,69,.06);
+  --red-bd: rgba(220,53,69,.3);
+  --blue: #2563eb;
+  --blue-bg: rgba(37,99,235,.06);
+  --blue-bd: rgba(37,99,235,.25);
+  --orange: #ea580c;
+  --orange-bg: rgba(234,88,12,.06);
+  --r: 10px; --rs: 6px;
+  --sh: 0 1px 4px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
+.ctr{max-width:1200px;margin:0 auto;padding:28px 24px 100px}
+
+/* Header */
+.hdr{margin-bottom:8px}
+.hdr h1{font-size:2rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.025em}
+.hdr .sub{color:var(--text-tert);font-size:.82rem;margin-top:4px}
+
+/* Top-level tab bar */
+.top-tabs{display:flex;gap:6px;position:sticky;top:0;z-index:200;background:var(--bg);padding:12px 0 10px;border-bottom:1px solid var(--border);margin-bottom:20px}
+.top-tab{padding:9px 22px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text-sec);cursor:pointer;font-size:.82rem;font-weight:500;transition:all .18s}
+.top-tab:hover{background:var(--bg-hover);color:var(--text);border-color:var(--border-light)}
+.top-tab.on{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 8px rgba(99,83,236,.25)}
+
+/* Main view toggle */
+.view{display:none;animation:fi .28s ease}.view.on{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* Step progress bar */
+.progress-bar{display:flex;align-items:center;margin:0 0 28px;padding:20px 24px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow-x:auto}
+.step-dot{display:flex;align-items:center;gap:10px;cursor:pointer;flex-shrink:0;transition:all .18s}
+.step-num{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;border:2px solid var(--border);color:var(--text-tert);background:var(--bg);transition:all .25s}
+.step-dot.active .step-num{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 10px rgba(99,83,236,.3)}
+.step-dot.done .step-num{background:var(--green);color:#fff;border-color:var(--green)}
+.step-label{font-size:.76rem;font-weight:500;color:var(--text-tert);transition:color .18s;white-space:nowrap}
+.step-dot.active .step-label{color:var(--text);font-weight:600}
+.step-dot.done .step-label{color:var(--green)}
+.step-line{width:48px;height:2px;background:var(--border);margin:0 4px;flex-shrink:0;transition:background .25s}
+.step-line.done{background:var(--green)}
+
+/* Step content area */
+.step-content{display:none;animation:fi .32s ease}.step-content.on{display:block}
+
+/* Dual-perspective layout */
+.dual{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px}
+@media(max-width:900px){.dual{grid-template-columns:1fr}}
+.panel{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh)}
+.panel-hdr{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.panel-hdr h3{font-size:.82rem;font-weight:600;margin:0}
+.panel-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700}
+.panel-icon.cust{background:var(--blue-bg);color:var(--blue)}
+.panel-icon.tech{background:var(--accent-bg);color:var(--accent)}
+.panel-body{padding:18px}
+
+/* Simulated landing page */
+.sim-landing{border-radius:8px;overflow:hidden;position:relative}
+.sim-lp-layout{display:grid;grid-template-columns:5fr 6fr;min-height:440px}
+@media(max-width:800px){.sim-lp-layout{grid-template-columns:1fr}}
+.sim-lp-left{background:linear-gradient(165deg,#1a1145 0%,#2d1b69 40%,#4a1d96 100%);padding:32px 28px;color:#fff;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.sim-lp-left::before{content:'';position:absolute;bottom:-60px;left:-40px;width:260px;height:260px;background:rgba(99,83,236,.2);border-radius:50%;filter:blur(80px)}
+.sim-lp-left::after{content:'';position:absolute;top:-30px;right:-50px;width:180px;height:180px;background:rgba(79,70,200,.15);border-radius:50%;filter:blur(60px)}
+.sim-lp-logo{display:flex;align-items:center;gap:10px;margin-bottom:24px;position:relative;z-index:1}
+.sim-lp-logo .logo-icon{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;backdrop-filter:blur(4px)}
+.sim-lp-logo .logo-text{font-size:.92rem;font-weight:700;letter-spacing:-.01em}
+.sim-lp-logo .logo-sep{color:rgba(255,255,255,.3);font-weight:300}
+.sim-lp-left h2{font-size:1.35rem;font-weight:700;line-height:1.3;letter-spacing:-.02em;margin-bottom:10px;position:relative;z-index:1}
+.sim-lp-left .lp-sub{font-size:.84rem;color:rgba(255,255,255,.6);margin-bottom:24px;line-height:1.6;position:relative;z-index:1}
+.sim-lp-checks{list-style:none;position:relative;z-index:1}
+.sim-lp-checks li{display:flex;align-items:flex-start;gap:9px;font-size:.78rem;color:rgba(255,255,255,.85);margin-bottom:10px;line-height:1.45}
+.sim-lp-checks .ck{width:22px;height:22px;border-radius:50%;background:rgba(22,163,104,.25);color:#34d399;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:700;flex-shrink:0;margin-top:1px}
+.sim-lp-right{background:#fff;padding:30px 32px;display:flex;flex-direction:column;justify-content:center}
+.sim-lp-right h3{font-size:1.1rem;font-weight:700;color:#1a1d23;margin-bottom:4px}
+.sim-lp-right .lp-form-sub{font-size:.78rem;color:#6b7280;margin-bottom:20px;line-height:1.5}
+.sim-form{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.sim-input{background:#fff;border:1px solid #d1d5db;border-radius:6px;padding:9px 12px;font-size:.78rem;color:#1a1d23;outline:none;transition:border-color .18s}
+.sim-input:focus{border-color:var(--accent)}
+.sim-input::placeholder{color:#9ca3af}
+.sim-input.full{grid-column:1/-1}
+.sim-lp-agree{grid-column:1/-1;display:flex;align-items:flex-start;gap:8px;margin-top:4px}
+.sim-lp-agree input[type=checkbox]{margin-top:3px;accent-color:var(--accent)}
+.sim-lp-agree span{font-size:.68rem;color:#9ca3af;line-height:1.5}
+.sim-btn{grid-column:1/-1;background:var(--accent);color:#fff;border:none;border-radius:6px;padding:13px;font-size:.86rem;font-weight:600;cursor:pointer;margin-top:6px;transition:all .18s;letter-spacing:-.01em}
+.sim-btn:hover{background:var(--accent-lt)}
+
+/* Simulated progress */
+.sim-progress{background:#fafbfc;border-radius:8px;padding:32px 28px;text-align:center}
+.sim-progress h3{font-size:1.1rem;font-weight:600;margin-bottom:6px;color:var(--text)}
+.sim-progress p{font-size:.82rem;color:var(--text-sec);margin-bottom:20px}
+.prog-track{width:100%;height:6px;background:var(--bg-hover);border-radius:3px;overflow:hidden;margin-bottom:16px}
+.prog-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.prog-steps{display:flex;flex-direction:column;gap:8px;text-align:left}
+.prog-item{display:flex;align-items:center;gap:10px;font-size:.78rem;color:var(--text-sec)}
+.prog-check{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;flex-shrink:0}
+.prog-check.done{background:var(--green-bg);color:var(--green)}
+.prog-check.active{background:var(--blue-bg);color:var(--blue);animation:pulse 1.5s infinite}
+.prog-check.pending{background:var(--bg-hover);color:var(--text-tert)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* Simulated Slack */
+.sim-slack{background:#1a1d21;border-radius:8px;overflow:hidden}
+.sim-slack-bar{background:#1a1d21;padding:8px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sim-slack-bar .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.12)}
+.sim-slack-bar .dot.r{background:#ff5f57}.sim-slack-bar .dot.y{background:#ffbd2e}.sim-slack-bar .dot.g{background:#28c840}
+.sim-slack-body{padding:20px;color:#d1d2d3;min-height:180px}
+.sim-slack-body h4{font-size:.88rem;font-weight:600;color:#fff;margin-bottom:10px}
+.sim-slack-body p{font-size:.78rem;color:rgba(255,255,255,.55);margin-bottom:8px}
+.sim-slack-msg{background:rgba(255,255,255,.04);border-radius:6px;padding:12px 14px;margin-bottom:10px}
+.sim-slack-msg .sender{font-size:.72rem;font-weight:600;color:#fff;margin-bottom:4px}
+.sim-slack-msg .msg-text{font-size:.78rem;color:rgba(255,255,255,.7)}
+.sim-slack-actions{display:flex;gap:8px;margin-top:12px}
+.sim-slack-btn{background:var(--accent);color:#fff;border:none;border-radius:4px;padding:6px 14px;font-size:.72rem;font-weight:600;cursor:pointer}
+.sim-slack-btn.sec{background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.7)}
+
+/* User provisioning viz */
+.user-viz{display:flex;flex-direction:column;gap:12px}
+.user-row{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg-stripe);border-radius:var(--rs);font-size:.78rem}
+.user-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:#fff;flex-shrink:0}
+.user-avatar.api{background:var(--accent)}
+.user-avatar.jit{background:var(--blue)}
+.user-detail{flex:1}
+.user-detail .name{font-weight:600;color:var(--text);margin-bottom:2px}
+.user-detail .meta{font-size:.7rem;color:var(--text-tert)}
+
+/* Technical detail boxes */
+.tech-block{background:var(--bg-stripe);border-radius:var(--rs);padding:14px 16px;margin-bottom:12px;font-size:.78rem}
+.tech-block .label{font-weight:600;color:var(--text);margin-bottom:4px;font-size:.72rem;text-transform:uppercase;letter-spacing:.03em}
+.tech-block p{color:var(--text-sec);margin:0;font-size:.78rem}
+.tech-block code{background:rgba(99,83,236,.08);padding:2px 6px;border-radius:3px;font-size:.72rem;color:var(--accent-lt)}
+
+/* Inline questions */
+.q-inline{border:1px solid var(--border);border-radius:var(--r);margin-top:18px;overflow:hidden}
+.q-inline-hdr{padding:12px 16px;background:var(--bg-stripe);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.q-inline-hdr h4{font-size:.78rem;font-weight:600;margin:0;flex:1}
+.q-inline-hdr .chev{transition:transform .18s;font-size:.68rem;color:var(--text-tert)}.q-inline-hdr .chev.open{transform:rotate(90deg)}
+.q-inline-body{padding:16px}.q-inline-body.off{display:none}
+
+.q-card{border-left:3px solid var(--border);padding:12px 16px;margin-bottom:10px;border-radius:0 var(--rs) var(--rs) 0;background:var(--bg-card);font-size:.78rem}
+.q-card.leadership{border-color:var(--yellow)}
+.q-card.architecture{border-color:var(--accent)}
+.q-card .q-title{font-weight:600;color:var(--text);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.q-card .q-body{color:var(--text-sec);line-height:1.6}
+.q-card .q-body strong{color:var(--text)}
+.q-card .q-research{margin-top:8px;padding:10px 12px;background:var(--bg-stripe);border-radius:var(--rs);font-size:.74rem;color:var(--text-sec)}
+.q-card .q-research .r-label{font-weight:600;color:var(--accent-lt);font-size:.68rem;text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px}
+
+/* Pills and badges */
+.pill{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.pa{background:var(--accent-bg);color:var(--accent-lt)}.pg{background:var(--green-bg);color:var(--green)}.py{background:var(--yellow-bg);color:var(--yellow)}.pr{background:var(--red-bg);color:var(--red)}.pb{background:var(--blue-bg);color:var(--blue)}.pn{background:var(--bg-hover);color:var(--text-sec)}
+.po{background:var(--orange-bg);color:var(--orange)}
+
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;border-radius:11px;font-size:.68rem;font-weight:700;padding:0 7px}
+
+/* Step nav buttons */
+.step-nav{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:18px;border-top:1px solid var(--border)}
+.step-nav-btn{padding:10px 24px;border-radius:var(--rs);font-size:.82rem;font-weight:600;cursor:pointer;transition:all .18s;border:none}
+.step-nav-btn.primary{background:var(--accent);color:#fff}.step-nav-btn.primary:hover{background:var(--accent-lt)}
+.step-nav-btn.secondary{background:var(--bg-hover);color:var(--text-sec);border:1px solid var(--border)}.step-nav-btn.secondary:hover{background:var(--bg-card);border-color:var(--border-light)}
+.step-nav-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* Questions dashboard */
+.q-stats{display:flex;gap:16px;flex-wrap:wrap;margin:14px 0 24px}
+.q-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:16px 22px;min-width:120px;box-shadow:var(--sh)}
+.q-stat .val{font-size:1.6rem;font-weight:700;color:var(--accent-lt)}.q-stat .val.warn{color:var(--yellow)}.q-stat .val.crit{color:var(--red)}
+.q-stat .lbl{font-size:.72rem;color:var(--text-tert);margin-top:2px}
+
+.q-section{margin-bottom:28px}
+.q-section-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;cursor:pointer;user-select:none}
+.q-section-hdr h3{font-size:1.05rem;font-weight:600;margin:0}
+.q-section-hdr .chev{transition:transform .18s;font-size:.72rem;color:var(--text-tert)}.q-section-hdr .chev.open{transform:rotate(90deg)}
+.q-section-body.off{display:none}
+
+.q-dash-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:12px;box-shadow:var(--sh);transition:border-color .18s}
+.q-dash-card:hover{border-color:var(--border-light)}
+.q-dash-card .q-dash-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.q-dash-card .q-dash-title{font-size:.88rem;font-weight:600}
+.q-dash-card .q-dash-body{font-size:.8rem;color:var(--text-sec);line-height:1.6;margin-bottom:10px}
+.q-dash-card .q-dash-body strong{color:var(--text)}
+.q-dash-card .q-dash-meta{display:flex;gap:8px;align-items:center;font-size:.72rem;color:var(--text-tert)}
+.q-dash-card .q-dash-research{margin-top:10px;padding:12px 14px;background:var(--bg-stripe);border-radius:var(--rs);font-size:.76rem;color:var(--text-sec);line-height:1.6}
+.q-dash-card .q-dash-research strong{color:var(--text)}
+
+/* Callouts */
+.co{border-radius:var(--rs);padding:14px 18px;margin:14px 0;font-size:.84rem;border-left:3px solid}
+.co-i{background:var(--blue-bg);border-color:var(--blue)}.co-i .ct{color:var(--blue)}
+.co-w{background:var(--yellow-bg);border-color:var(--yellow)}.co-w .ct{color:var(--yellow)}
+.co-c{background:var(--red-bg);border-color:var(--red)}.co-c .ct{color:var(--red)}
+.co-s{background:var(--green-bg);border-color:var(--green)}.co-s .ct{color:var(--green)}
+.ct{font-weight:700;margin-bottom:4px;font-size:.78rem;text-transform:uppercase;letter-spacing:.03em}
+.co p{color:var(--text-sec);margin:0}
+
+/* Mermaid */
+.mw{margin:14px 0;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:20px;overflow-x:auto}
+.mermaid{text-align:center}
+
+/* Tables */
+.tw{overflow-x:auto;margin:12px 0 16px;border-radius:var(--r);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.78rem}
+th{text-align:left;padding:10px 14px;font-weight:600;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-tert);background:var(--bg-card);border-bottom:1px solid var(--border)}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text-sec);vertical-align:top}
+tr:nth-child(even) td{background:var(--bg-stripe)}
+tr:last-child td{border-bottom:none}
+td strong,td b{color:var(--text);font-weight:600}
+
+/* Misc */
+h2{font-size:1.3rem;font-weight:650;margin:24px 0 12px;letter-spacing:-.01em}
+h3{font-size:1.05rem;font-weight:600;margin:20px 0 10px}
+p,.d{color:var(--text-sec);font-size:.84rem;margin-bottom:12px}
+a{color:var(--accent-lt);text-decoration:none}a:hover{text-decoration:underline}
+.desc{font-size:.84rem;color:var(--text-sec);margin-bottom:16px;max-width:680px}
+
+/* Simulated auth screen */
+.sim-auth{background:#f4f4f9;border-radius:8px;padding:28px;text-align:center}
+.sim-auth-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:24px;max-width:320px;margin:0 auto;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.sim-auth-card .auth-logo{width:48px;height:48px;border-radius:12px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;margin:0 auto 14px}
+.sim-auth-card h4{font-size:.92rem;font-weight:600;margin-bottom:4px}
+.sim-auth-card p{font-size:.76rem;color:var(--text-sec);margin-bottom:16px}
+.sim-auth-card .auth-perms{text-align:left;margin-bottom:16px}
+.sim-auth-card .perm{display:flex;align-items:center;gap:8px;font-size:.74rem;color:var(--text-sec);padding:4px 0}
+.sim-auth-card .perm-check{color:var(--green);font-weight:700}
+.sim-auth-card .auth-btn{width:100%;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:6px;font-size:.82rem;font-weight:600;cursor:pointer}
+
+/* Ready state */
+.sim-ready{text-align:center;padding:24px}
+.sim-ready .ready-icon{width:64px;height:64px;border-radius:50%;background:var(--green-bg);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:1.4rem;margin:0 auto 16px}
+.sim-ready h3{font-size:1.2rem;font-weight:700;margin-bottom:6px}
+.sim-ready p{font-size:.82rem;color:var(--text-sec);margin-bottom:18px}
+.ready-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.ready-action{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;text-align:center;min-width:130px;cursor:pointer;transition:all .18s;box-shadow:var(--sh)}
+.ready-action:hover{border-color:var(--accent);background:var(--accent-bg)}
+.ready-action .ra-icon{font-size:1.1rem;margin-bottom:6px}
+.ready-action .ra-label{font-size:.76rem;font-weight:600;color:var(--text)}
+
+/* Summary table in ready step */
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.summary-item{background:var(--bg-stripe);border-radius:var(--rs);padding:12px 16px}
+.summary-item .s-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-tert);font-weight:600;margin-bottom:4px}
+.summary-item .s-value{font-size:.82rem;font-weight:500;color:var(--text)}
+
+@media print{.top-tabs,.step-nav,.progress-bar{display:none}.view,.step-content{display:block!important}}
+</style>
+</head>
+<body>
+<div class="ctr">
+  <div class="hdr">
+    <h1>RevFlow — New Customer Onboarding</h1>
+    <div class="sub">Interactive Journey Mock &middot; April 2026 &middot; For Leadership, PM, Architecture &amp; Engineering Review</div>
+  </div>
+
+  <!-- ═══════ TOP TABS ═══════ -->
+  <nav class="top-tabs">
+    <button class="top-tab on" data-view="journey">Onboarding Journey</button>
+    <button class="top-tab" data-view="questions">Open Questions Dashboard</button>
+  </nav>
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!--                    JOURNEY VIEW                         -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <div class="view on" id="journey">
+
+    <!-- Step progress bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- ─── STEP 1: Landing Page ─── -->
+    <div class="step-content on" id="step-1">
+      <div class="step-nav" style="margin-bottom:8px">
+        <div></div>
+        <button class="step-nav-btn primary" onclick="goStep(2)">Next: Org Provisioning &rarr;</button>
+      </div>
+      <h2>Step 1: Revenue Cloud Landing Page</h2>
+      <p class="desc">The customer discovers RevFlow through AgentExchange or a branded landing page. They fill out a simple signup form. No Salesforce branding is visible.</p>
+
+      <!-- Landing Page Mockup (full width) -->
+      <div class="panel" style="margin-bottom:18px">
+        <div class="panel-hdr">
+          <div class="panel-icon cust">C</div>
+          <h3>Customer View</h3>
+          <span class="pill pb">What They See</span>
+        </div>
+        <div class="panel-body" style="padding:0">
+          <div class="sim-landing">
+            <div class="sim-lp-layout">
+              <div class="sim-lp-left">
+                <div class="sim-lp-logo">
+                  <div class="logo-icon">RF</div>
+                  <span class="logo-text">RevFlow</span>
+                  <span class="logo-sep">&times;</span>
+                  <span class="logo-text">Slack</span>
+                </div>
+                <h2>Revenue management, right where your team works.</h2>
+                <div class="lp-sub">Sign up for RevFlow and start quoting, managing products, and closing deals entirely from Slack.</div>
+                <ul class="sim-lp-checks">
+                  <li><span class="ck">&#10003;</span> Create and send quotes in seconds</li>
+                  <li><span class="ck">&#10003;</span> Manage your product catalog and pricing</li>
+                  <li><span class="ck">&#10003;</span> Built-in approval workflows</li>
+                  <li><span class="ck">&#10003;</span> Track deals and revenue metrics</li>
+                  <li><span class="ck">&#10003;</span> Works with any Slack plan</li>
+                  <li><span class="ck">&#10003;</span> No additional software to install</li>
+                </ul>
+              </div>
+              <div class="sim-lp-right">
+                <h3>Get started with RevFlow</h3>
+                <div class="lp-form-sub">Set up your revenue workspace in 60 seconds. Free to start.</div>
+                <div class="sim-form">
+                  <input class="sim-input" placeholder="First name" value="Rita" readonly>
+                  <input class="sim-input" placeholder="Last name" value="Chen" readonly>
+                  <input class="sim-input" placeholder="Job title" value="Account Executive" readonly>
+                  <input class="sim-input" placeholder="Company" value="Acme Corp" readonly>
+                  <input class="sim-input" placeholder="Team size" value="3-10 people" readonly>
+                  <input class="sim-input" placeholder="Work email" value="rita@acmecorp.com" readonly>
+                  <input class="sim-input full" placeholder="Slack workspace URL" value="acme-corp.slack.com" readonly>
+                  <div class="sim-lp-agree">
+                    <input type="checkbox" checked disabled>
+                    <span>I agree to the RevFlow Terms of Service and Privacy Policy. Your workspace will be provisioned on secure cloud infrastructure.</span>
+                  </div>
+                  <button class="sim-btn">Sign me up</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technical View (below, 3-column grid) -->
+      <div class="panel" style="margin-bottom:20px">
+        <div class="panel-hdr">
+          <div class="panel-icon tech">T</div>
+          <h3>Technical View</h3>
+          <span class="pill pa">Behind the Scenes</span>
+        </div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+            <div class="tech-block" style="margin:0">
+              <div class="label">Discovery Path</div>
+              <p>Customer finds RevFlow via <strong>AgentExchange</strong> (unified marketplace, 10K+ apps) or a branded landing page. The page collects workspace info to initiate provisioning.</p>
+            </div>
+            <div class="tech-block" style="margin:0">
+              <div class="label">Form &rarr; RevFlow Middleware</div>
+              <p>Form submits to the <strong>RevFlow Middleware Server</strong> which orchestrates the entire onboarding:<br>1. Validate Slack workspace URL<br>2. Check for existing tenant<br>3. Call Salesforce Signup API (Step 2)<br>4. Wire org to Slack workspace (Step 4)</p>
+            </div>
+            <div class="tech-block" style="margin:0">
+              <div class="label">Key Architecture Reference</div>
+              <p>Settled decision: <strong>Seamless App only</strong> — Custom Slack Apps are deprecated. The RevFlow Middleware handles provisioning orchestration; Slack calls SF APIs directly via MCP at runtime.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step nav -->
+      <div class="step-nav">
+        <div></div>
+        <button class="step-nav-btn primary" onclick="goStep(2)">Next: Org Provisioning &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ─── STEP 2: Org Provisioning ─── -->
+    <div class="step-content" id="step-2">
+      <div class="step-nav" style="margin-bottom:8px">
+        <button class="step-nav-btn secondary" onclick="goStep(1)">&larr; Back</button>
+        <button class="step-nav-btn primary" onclick="goStep(3)">Next: User Provisioning &rarr;</button>
+      </div>
+      <h2>Step 2: Org Provisioning</h2>
+      <p class="desc">The RevFlow Middleware Server calls the Salesforce Signup API to provision an org behind the scenes — similar to how developer.salesforce.com creates orgs. The customer sees a friendly progress screen with zero Salesforce branding.</p>
+
+      <!-- Customer View (full width) -->
+      <div class="panel" style="margin-bottom:18px">
+        <div class="panel-hdr">
+          <div class="panel-icon cust">C</div>
+          <h3>Customer View</h3>
+          <span class="pill pb">What They See</span>
+        </div>
+        <div class="panel-body">
+          <div class="sim-progress" id="provProgress">
+            <h3>Setting up your workspace...</h3>
+            <p>This takes about 30 seconds. We're preparing everything for Acme Corp.</p>
+            <div class="prog-track"><div class="prog-fill" id="provFill" style="width:0%;background:var(--accent)"></div></div>
+            <div class="prog-steps" style="max-width:420px;margin:0 auto">
+              <div class="prog-item"><div class="prog-check done">&#10003;</div> Verified your Slack workspace</div>
+              <div class="prog-item"><div class="prog-check done">&#10003;</div> Created your revenue workspace</div>
+              <div class="prog-item"><div class="prog-check active">&#9679;</div> Configuring product catalog &amp; quoting...</div>
+              <div class="prog-item"><div class="prog-check pending">&#9679;</div> Setting up your team</div>
+              <div class="prog-item"><div class="prog-check pending">&#9679;</div> Connecting to Slack</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technical View (below) -->
+      <div class="panel" style="margin-bottom:18px">
+        <div class="panel-hdr">
+          <div class="panel-icon tech">T</div>
+          <h3>Technical View</h3>
+          <span class="pill pa">Behind the Scenes</span>
+        </div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px">
+            <div class="tech-block" style="margin:0">
+              <div class="label">RevFlow Middleware Server</div>
+              <p>A dedicated server (similar to developer.salesforce.com's backend) that <strong>orchestrates the entire provisioning pipeline</strong>. Receives the signup form, calls the Salesforce Signup API, provisions integration users, and wires the new org to the customer's Slack workspace.</p>
+            </div>
+            <div class="tech-block" style="margin:0">
+              <div class="label">Provisioning Pipeline</div>
+              <p><strong>Pre-warmed pool model (recommended):</strong> Middleware grabs a preconfigured templated org from the pool in seconds — already set up with Revenue Cloud via <strong>Salesforce Go — Revenue Cloud Initial Setup</strong>. Alternative: on-demand provisioning via Signup API (takes minutes).</p>
+            </div>
+            <div class="tech-block" style="margin:0">
+              <div class="label">Revenue Cloud Auto-Configuration</div>
+              <p>Uses a <strong>preconfigured templated org</strong> or <strong>Salesforce Go — Revenue Cloud Initial Setup</strong> to provision orgs with Revenue Cloud objects, pricing rules, approval workflows, and a default product catalog. No manual metadata deploy.</p>
+            </div>
+          </div>
+          <div class="mw" style="margin:0"><div class="mermaid">
+sequenceDiagram
+    participant C as Customer
+    participant MW as RevFlow Middleware
+    participant SA as Signup API
+    participant Org as SF Org
+    participant S as Slack Workspace
+    C->>MW: Signup form submitted
+    MW->>SA: Request org from pool
+    SA-->>MW: Org ID + credentials (seconds)
+    Note over SA,Org: Preconfigured templated org (RC Initial Setup)
+    MW->>Org: Create Integration User (API-only)
+    MW->>Org: Assign Permission Sets
+    MW->>S: Register Seamless App + tenant mapping
+    MW-->>C: Progress: "Almost ready..."
+    MW->>S: Connect org to Slack workspace
+    MW-->>C: "Your workspace is ready!"
+          </div></div>
+        </div>
+      </div>
+
+      <!-- Inline Questions -->
+      <div class="q-inline">
+        <div class="q-inline-hdr" onclick="toggleInline(this)">
+          <span class="chev open">&#9654;</span>
+          <h4>Open Questions for This Step</h4>
+          <span class="badge" style="background:var(--yellow-bg);color:var(--yellow)">4</span>
+        </div>
+        <div class="q-inline-body">
+          <div class="q-card leadership">
+            <div class="q-title"><span class="pill py">Leadership</span> Org Edition &amp; Cost</div>
+            <div class="q-body">Enterprise edition org has a cost of <strong>$165-175/user/mo</strong>. Which edition should RevFlow provision for each customer?</div>
+            <div class="q-research">
+              <div class="r-label">Research Findings</div>
+              <strong>Starter Suite ($25/user/mo)</strong> — No API access. Limited to 10 users. Cannot support RevFlow's API-driven backend. <span style="color:var(--red);font-weight:600">UNVIABLE.</span><br><br>
+              <strong>Pro Suite ($100/user/mo)</strong> — 5,000 API calls/day. Has Flows, custom objects, Account access, AppExchange. May be sufficient for low-volume SMBs but needs load-testing validation against RevFlow's usage patterns.<br><br>
+              <strong>Enterprise ($165-175/user/mo)</strong> — Unlimited API calls. Advanced workflow automation, territory management. Safest option but highest cost per org.<br><br>
+              <strong>Open:</strong> Is there a lightweight SKU or internal-use edition that can be provisioned at reduced cost? Does <strong>SF Go</strong> support zero/reduced-cost provisioning for RevFlow?
+            </div>
+          </div>
+          <div class="q-card leadership">
+            <div class="q-title"><span class="pill py">Leadership</span> Cost Absorption</div>
+            <div class="q-body">Who subsidizes the Salesforce org infrastructure cost for free-tier customers? At scale (10K+ free users), this is the most expensive unresolved business question.</div>
+            <div class="q-research">
+              <div class="r-label">Options Under Consideration</div>
+              (a) Salesforce subsidizes as customer acquisition cost<br>
+              (b) Loss-led for a capped period (e.g. 90 days)<br>
+              (c) Lightweight org edition to reduce per-org cost<br>
+              (d) SF Go mechanism for zero/reduced-cost provisioning
+            </div>
+          </div>
+          <div class="q-card architecture">
+            <div class="q-title"><span class="pill pa">Architecture</span> Provisioning SLA</div>
+            <div class="q-body">What is the Signup API provisioning latency? If org creation takes minutes, the <strong>pre-warmed pool model is mandatory</strong> for a self-serve freemium experience. Pool management adds operational complexity.</div>
+          </div>
+          <div class="q-card architecture">
+            <div class="q-title"><span class="pill pa">Architecture</span> RevFlow Middleware Server — Scope &amp; Hosting</div>
+            <div class="q-body">The RevFlow Middleware Server orchestrates provisioning (org creation, user setup, Slack wiring) but is <strong>not in the runtime path</strong> — Slack calls SF APIs directly via MCP at runtime. Key questions: Where is it hosted? What is its availability SLA? How does it manage the pre-warmed org pool? What secrets/credentials does it store?</div>
+            <div class="q-research">
+              <div class="r-label">Architectural Considerations</div>
+              <strong>Scope:</strong> Provisioning-only server. Handles signup &rarr; org creation &rarr; integration user setup &rarr; Slack workspace connection. Not involved in day-to-day RevFlow operations.<br><br>
+              <strong>Analogous to:</strong> developer.salesforce.com's backend — receives signup forms, calls Signup API, provisions orgs, returns credentials.<br><br>
+              <strong>Hosting options:</strong> Heroku, AWS, or Salesforce Hyperforce. Needs access to Signup API (org provisioning) and Slack API (workspace wiring).<br><br>
+              <strong>Security:</strong> Stores Signup API credentials, org admin tokens (temporarily), and Slack app tokens. Requires vault/secrets management.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="step-nav-btn secondary" onclick="goStep(1)">&larr; Back</button>
+        <button class="step-nav-btn primary" onclick="goStep(3)">Next: User Provisioning &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ─── STEP 3: User Provisioning ─── -->
+    <div class="step-content" id="step-3">
+      <div class="step-nav" style="margin-bottom:8px">
+        <button class="step-nav-btn secondary" onclick="goStep(2)">&larr; Back</button>
+        <button class="step-nav-btn primary" onclick="goStep(4)">Next: Slack Authentication &rarr;</button>
+      </div>
+      <h2>Step 3: User Provisioning (API-Only Integration Users)</h2>
+      <p class="desc">The RevFlow Middleware creates API-only Integration Users in the newly provisioned org. The customer never sees a Salesforce user being created — they just see "Configuring your team..."</p>
+
+      <!-- Customer View (full width) -->
+      <div class="panel" style="margin-bottom:18px">
+        <div class="panel-hdr">
+          <div class="panel-icon cust">C</div>
+          <h3>Customer View</h3>
+          <span class="pill pb">What They See</span>
+        </div>
+        <div class="panel-body">
+          <div class="sim-progress">
+            <h3>Configuring your team...</h3>
+            <p>Setting up secure access for your workspace members.</p>
+            <div class="prog-track"><div class="prog-fill" style="width:75%;background:var(--accent)"></div></div>
+            <div class="user-viz" style="margin-top:16px;max-width:480px;margin-left:auto;margin-right:auto">
+              <div class="user-row">
+                <div class="user-avatar jit">RC</div>
+                <div class="user-detail">
+                  <div class="name">Rita Chen</div>
+                  <div class="meta">rita@acmecorp.com &middot; Workspace Admin</div>
+                </div>
+                <span class="pill pg">Ready</span>
+              </div>
+              <div class="user-row">
+                <div class="user-avatar jit">JH</div>
+                <div class="user-detail">
+                  <div class="name">Jordan Hayes</div>
+                  <div class="meta">jordan@acmecorp.com &middot; Team Member</div>
+                </div>
+                <span class="pill pb">Setting up...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technical View (below, 3-column grid) -->
+      <div class="panel" style="margin-bottom:18px">
+        <div class="panel-hdr">
+          <div class="panel-icon tech">T</div>
+          <h3>Technical View</h3>
+          <span class="pill pa">Behind the Scenes</span>
+        </div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
+            <div class="tech-block" style="margin:0">
+              <div class="label">Integration User (API-Only)</div>
+              <p>The <strong>RevFlow Middleware</strong> creates a Salesforce Integration User with the <code>Minimum Access – API Only Integrations</code> profile. This user:</p>
+              <ul style="margin:8px 0 0 18px;font-size:.78rem;color:var(--text-sec)">
+                <li><strong>Cannot log in</strong> to Salesforce UI</li>
+                <li>Accesses data only via REST, SOAP, or Bulk API</li>
+                <li>Uses <code>OAuth Client Credentials Flow</code> for auth</li>
+                <li>Gets permissions via <strong>Permission Sets</strong> (not the profile)</li>
+              </ul>
+            </div>
+            <div class="tech-block" style="margin:0">
+              <div class="label">JIT User Provisioning</div>
+              <p>The Middleware maps Slack workspace members to SF users via <strong>Just-In-Time (JIT) provisioning</strong>. Slack email &rarr; SF User. No SF login credentials are ever created for end users — at runtime, Slack calls SF APIs directly via Salesforce and Revenue Cloud MCP.</p>
+            </div>
+            <div class="tech-block" style="margin:0">
+              <div class="label">User License Assignment</div>
+              <p>Integration User license: <code>Salesforce Integration</code><br>
+              Profile: <code>Minimum Access – API Only Integrations</code><br>
+              Permission Set License: <code>Salesforce API Integration PSL</code><br>
+              Audit shows: <em>"Access Restricted for API Only Users"</em></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inline Questions -->
+      <div class="q-inline">
+        <div class="q-inline-hdr" onclick="toggleInline(this)">
+          <span class="chev open">&#9654;</span>
+          <h4>Open Questions for This Step</h4>
+          <span class="badge" style="background:var(--yellow-bg);color:var(--yellow)">3</span>
+        </div>
+        <div class="q-inline-body">
+          <div class="q-card leadership">
+            <div class="q-title"><span class="pill py">Leadership</span> Sales Cloud License Requirement</div>
+            <div class="q-body">RevFlow needs access to the <strong>Account object</strong> and platform items like <strong>Profiles, Flows, and custom objects</strong>. Is one Sales Cloud license required for platform access? Or can the Integration User license alone provide what's needed?</div>
+            <div class="q-research">
+              <div class="r-label">Architectural Consideration</div>
+              The Integration User license provides API access but may not include standard objects like Account, Opportunity, or Product2 without additional licensing. A single Sales Cloud license might unlock the platform schema that RevFlow's API calls rely on. This needs validation with the Salesforce Licensing team.
+            </div>
+          </div>
+          <div class="q-card architecture">
+            <div class="q-title"><span class="pill pa">Architecture</span> Keeping Salesforce Invisible</div>
+            <div class="q-body">How do we prevent any Salesforce UI from being accessible to end users?</div>
+            <div class="q-research">
+              <div class="r-label">Research: Integration User + Headless 360</div>
+              <strong>Integration Users</strong> with the "Minimum Access – API Only Integrations" profile physically <strong>cannot log into the Salesforce UI</strong>. The profile is locked and non-editable.<br><br>
+              This is now further validated by <strong>Salesforce Headless 360</strong>, announced April 15, 2026 at TrailblazerDX. Parker Harris asked: <em>"Why should you ever log into Salesforce again?"</em><br><br>
+              Headless 360 exposes the entire Salesforce platform as <strong>60+ MCP tools</strong> and APIs — no browser required. This is the strongest architectural validation for RevFlow's invisible-Salesforce approach.<br><br>
+              <strong>Three-layer invisibility:</strong><br>
+              1. API-Only Integration Users (no UI login)<br>
+              2. Slack calls SF APIs via Salesforce &amp; Revenue Cloud MCP (no SF URLs exposed)<br>
+              3. Headless 360 platform direction (API is the UI)
+            </div>
+          </div>
+          <div class="q-card architecture">
+            <div class="q-title"><span class="pill pa">Architecture</span> Token Refresh for Provisioned Orgs</div>
+            <div class="q-body">How does Seamless Auth handle token refresh for RevFlow-provisioned orgs? These orgs are not customer-initiated — does RevFlow act as the Connected App? Access tokens expire in ~2 hours; refresh tokens are indefinite.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="step-nav-btn secondary" onclick="goStep(2)">&larr; Back</button>
+        <button class="step-nav-btn primary" onclick="goStep(4)">Next: Slack Authentication &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ─── STEP 4: Slack Authentication ─── -->
+    <div class="step-content" id="step-4">
+      <div class="step-nav" style="margin-bottom:8px">
+        <button class="step-nav-btn secondary" onclick="goStep(3)">&larr; Back</button>
+        <button class="step-nav-btn primary" onclick="goStep(5)">Next: App Ready &rarr;</button>
+      </div>
+      <h2>Step 4: Slack Seamless App Authentication</h2>
+      <p class="desc">The RevFlow Middleware wires the newly provisioned org to the customer's Slack workspace via Seamless Auth. This is zero-config from the customer's perspective — one click and it's connected.</p>
+
+      <!-- Customer View (full width) -->
+      <div class="panel" style="margin-bottom:18px">
+        <div class="panel-hdr">
+          <div class="panel-icon cust">C</div>
+          <h3>Customer View</h3>
+          <span class="pill pb">What They See</span>
+        </div>
+        <div class="panel-body">
+          <div class="sim-auth">
+            <div class="sim-auth-card">
+              <div class="auth-logo">RF</div>
+              <h4>Connect RevFlow to Slack</h4>
+              <p>RevFlow wants to access your <strong>Acme Corp</strong> workspace</p>
+              <div class="auth-perms">
+                <div class="perm"><span class="perm-check">&#10003;</span> View channels and messages</div>
+                <div class="perm"><span class="perm-check">&#10003;</span> Send messages as RevFlow</div>
+                <div class="perm"><span class="perm-check">&#10003;</span> Manage interactive components</div>
+                <div class="perm"><span class="perm-check">&#10003;</span> Access workspace member list</div>
+              </div>
+              <button class="auth-btn">Authorize</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technical View (below, 3-column grid) -->
+      <div class="panel" style="margin-bottom:18px">
+        <div class="panel-hdr">
+          <div class="panel-icon tech">T</div>
+          <h3>Technical View</h3>
+          <span class="pill pa">Behind the Scenes</span>
+        </div>
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+            <div class="tech-block" style="margin:0">
+              <div class="label">Seamless Auth Flow</div>
+              <p><strong>Zero-config authentication</strong> between Slack and Salesforce. No custom OAuth flows needed. Seamless Auth handles:</p>
+              <ul style="margin:8px 0 0 18px;font-size:.78rem;color:var(--text-sec)">
+                <li>Automatic user mapping (Slack email &rarr; SF user)</li>
+                <li>Server-side token storage</li>
+                <li>Access tokens (~2hr), refresh tokens (indefinite)</li>
+                <li>Workspace-to-org tenant mapping via Seamless Auth</li>
+              </ul>
+            </div>
+            <div class="tech-block" style="margin:0">
+              <div class="label">Tenant Mapping (Middleware-Initiated)</div>
+              <p>The <strong>RevFlow Middleware</strong> registers the tenant mapping: <code>workspace_id:T04ACME</code> &harr; <code>org_id:00D5e000001ABC</code>. Once connected, all subsequent Slack interactions call Salesforce APIs directly through Salesforce and Revenue Cloud MCP tools — no middleware in the runtime path.</p>
+            </div>
+          </div>
+          <div class="tech-block" style="margin:0">
+            <div class="label">Three Auth States</div>
+            <div class="tw" style="margin:8px 0 0"><table>
+              <thead><tr><th>State</th><th>Description</th><th>RevFlow Action</th></tr></thead>
+              <tbody>
+                <tr><td><b>No tenant connection</b></td><td>No active SF-Slack link</td><td>Prompt admin to set up</td></tr>
+                <tr><td><b>No user mapping</b></td><td>Accounts not linked</td><td>Auto-map via email or prompt manual link</td></tr>
+                <tr><td><b>Connected</b></td><td>Connection + mapping active</td><td>Full RevFlow functionality</td></tr>
+              </tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inline Questions -->
+      <div class="q-inline">
+        <div class="q-inline-hdr" onclick="toggleInline(this)">
+          <span class="chev open">&#9654;</span>
+          <h4>Open Questions for This Step</h4>
+          <span class="badge" style="background:var(--accent-bg);color:var(--accent)">2</span>
+        </div>
+        <div class="q-inline-body">
+          <div class="q-card architecture">
+            <div class="q-title"><span class="pill pa">Architecture</span> Seamless Auth Token Refresh</div>
+            <div class="q-body">How does Seamless Auth handle token refresh for RevFlow-provisioned orgs (not customer-initiated)? Does RevFlow act as the Connected App? What happens if the refresh token is revoked or the org is suspended?</div>
+          </div>
+          <div class="q-card architecture">
+            <div class="q-title"><span class="pill pa">Architecture</span> Admin Role Mapping</div>
+            <div class="q-body">Slack workspace admin = RevFlow admin is straightforward. But what about complex team structures — multiple approval hierarchies, regional teams, role-based access? How does Slack workspace structure map to SF role hierarchy?</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="step-nav-btn secondary" onclick="goStep(3)">&larr; Back</button>
+        <button class="step-nav-btn primary" onclick="goStep(5)">Next: App Ready &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ─── STEP 5: App Ready ─── -->
+    <div class="step-content" id="step-5">
+      <div class="step-nav" style="margin-bottom:8px">
+        <button class="step-nav-btn secondary" onclick="goStep(4)">&larr; Back</button>
+        <button class="step-nav-btn primary" onclick="switchToQuestions()" style="background:var(--green);border-color:var(--green)">View Open Questions Dashboard &rarr;</button>
+      </div>
+      <h2>Step 5: RevFlow is Ready</h2>
+      <p class="desc">The onboarding is complete. The customer lands in Slack with RevFlow fully operational. They see a welcome message with quick actions to get started.</p>
+
+      <!-- Customer View (full width) -->
+      <div class="panel" style="margin-bottom:18px">
+        <div class="panel-hdr">
+          <div class="panel-icon cust">C</div>
+          <h3>Customer View</h3>
+          <span class="pill pb">What They See</span>
+        </div>
+        <div class="panel-body">
+          <div class="sim-slack" style="max-width:640px;margin:0 auto">
+            <div class="sim-slack-bar">
+              <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+              <span style="color:rgba(255,255,255,.5);font-size:.72rem;margin-left:8px">Acme Corp &middot; #revflow</span>
+            </div>
+            <div class="sim-slack-body">
+              <div class="sim-slack-msg">
+                <div class="sender">RevFlow</div>
+                <div class="msg-text">
+                  Welcome to RevFlow, Acme Corp! Your revenue workspace is ready.<br><br>
+                  Here's what you can do:<br>
+                  &bull; Create quotes and send them for approval<br>
+                  &bull; Browse and manage your product catalog<br>
+                  &bull; Set up pricing rules and discounts<br>
+                  &bull; Track deals and revenue metrics
+                </div>
+              </div>
+              <div class="sim-slack-actions">
+                <button class="sim-slack-btn">Create a Quote</button>
+                <button class="sim-slack-btn sec">Browse Catalog</button>
+                <button class="sim-slack-btn sec">Set Up Products</button>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:14px;text-align:center">
+            <a href="https://rev-slack-flow-11d10afb42e6.herokuapp.com/demo/workspace/acme-corp/home" target="_blank" style="font-size:.82rem;font-weight:600">Open the full Slack App Mock &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Technical View (below) -->
+      <div class="panel" style="margin-bottom:18px">
+        <div class="panel-hdr">
+          <div class="panel-icon tech">T</div>
+          <h3>Technical View</h3>
+          <span class="pill pa">Provisioning Summary</span>
+        </div>
+        <div class="panel-body">
+          <div class="summary-grid" style="grid-template-columns:1fr 1fr 1fr 1fr">
+            <div class="summary-item">
+              <div class="s-label">Provisioned By</div>
+              <div class="s-value">RevFlow Middleware Server</div>
+            </div>
+            <div class="summary-item">
+              <div class="s-label">Salesforce Org</div>
+              <div class="s-value">00D5e000001ABCDEF (Production)</div>
+            </div>
+            <div class="summary-item">
+              <div class="s-label">Integration User</div>
+              <div class="s-value">revflow-api@acmecorp.sfdc (API Only)</div>
+            </div>
+            <div class="summary-item">
+              <div class="s-label">Seamless Auth</div>
+              <div class="s-value">Connected &middot; Token active</div>
+            </div>
+            <div class="summary-item">
+              <div class="s-label">Slack Workspace</div>
+              <div class="s-value">T04ACME &middot; acme-corp.slack.com</div>
+            </div>
+            <div class="summary-item">
+              <div class="s-label">Revenue Cloud</div>
+              <div class="s-value">Auto-configured &middot; Default catalog</div>
+            </div>
+            <div class="summary-item">
+              <div class="s-label">Available Surfaces</div>
+              <div class="s-value">Block Kit UI (all tiers)</div>
+            </div>
+            <div class="summary-item">
+              <div class="s-label">Runtime Path</div>
+              <div class="s-value">Slack &rarr; SF MCP (no middleware)</div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px">
+            <div class="tech-block" style="margin:0">
+              <div class="label">What Was Provisioned (Invisible to Customer)</div>
+              <p>1. RevFlow Middleware received signup &amp; orchestrated provisioning<br>
+              2. Preconfigured templated org from pre-warmed pool (SF Go — RC Initial Setup)<br>
+              3. Revenue Cloud auto-configured (objects, flows, approval rules, catalog)<br>
+              4. Integration User created (API-only, no UI login)<br>
+              5. JIT user mapping (Slack emails &rarr; SF users)<br>
+              6. Seamless Auth tenant connection (workspace &harr; org)<br>
+              7. Block Kit surfaces registered for RevFlow app</p>
+            </div>
+            <div class="co co-s" style="margin:0;display:flex;flex-direction:column;justify-content:center">
+              <div class="ct">Salesforce Remains Invisible</div>
+              <p>The customer has never seen a Salesforce URL, login screen, or brand reference. The RevFlow Middleware handled all provisioning; at runtime, Slack calls Salesforce APIs directly via MCP. The middleware is only in the provisioning path, not the runtime path.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inline Questions -->
+      <div class="q-inline">
+        <div class="q-inline-hdr" onclick="toggleInline(this)">
+          <span class="chev open">&#9654;</span>
+          <h4>Open Questions for This Step</h4>
+          <span class="badge" style="background:var(--accent-bg);color:var(--accent)">1</span>
+        </div>
+        <div class="q-inline-body">
+          <div class="q-card architecture">
+            <div class="q-title"><span class="pill pa">Architecture</span> First-Run Experience Design</div>
+            <div class="q-body">The setup wizard (products, pricing, team configuration) must be <strong>fully in Slack</strong> — Block Kit modals and forms. What is the optimal first-run flow? How do we guide a new customer from "app installed" to "first quote created" entirely within Slack's UI constraints?</div>
+            <div class="q-research">
+              <div class="r-label">Consideration</div>
+              Seamless App currently lacks an App Home Tab (persistent dashboard). The first-run experience must work via a dedicated channel + pinned content, or by sending a structured onboarding message with interactive Block Kit components. Seamless App Home is on the roadmap.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step-nav">
+        <button class="step-nav-btn secondary" onclick="goStep(4)">&larr; Back</button>
+        <button class="step-nav-btn primary" onclick="switchToQuestions()" style="background:var(--green);border-color:var(--green)">View Open Questions Dashboard &rarr;</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════ -->
+  <!--                QUESTIONS DASHBOARD                      -->
+  <!-- ════════════════════════════════════════════════════════ -->
+  <div class="view" id="questions">
+
+    <h2>Open Questions Dashboard</h2>
+    <p class="desc">All questions surfaced during the onboarding journey, organized by audience. Each question includes research findings where available.</p>
+
+    <div class="q-stats">
+      <div class="q-stat"><div class="val">10</div><div class="lbl">Total Questions</div></div>
+      <div class="q-stat"><div class="val warn">3</div><div class="lbl">Leadership</div></div>
+      <div class="q-stat"><div class="val">7</div><div class="lbl">Architecture</div></div>
+      <div class="q-stat"><div class="val crit">3</div><div class="lbl">Researched</div></div>
+    </div>
+
+    <!-- Leadership Questions -->
+    <div class="q-section">
+      <div class="q-section-hdr" onclick="toggleSection(this)">
+        <span class="chev open">&#9654;</span>
+        <h3>Leadership Questions</h3>
+        <span class="pill py">3 Questions</span>
+      </div>
+      <div class="q-section-body">
+
+        <div class="q-dash-card" style="border-left:3px solid var(--yellow)">
+          <div class="q-dash-top">
+            <div class="q-dash-title">1. Org Edition &amp; Cost</div>
+            <span class="pill po">Researched</span>
+          </div>
+          <div class="q-dash-body">Enterprise edition org has a cost of <strong>$165-175/user/mo</strong>. Which edition should be provisioned for RevFlow customers?</div>
+          <div class="q-dash-research">
+            <strong>Starter Suite ($25/user/mo)</strong> — No API access. Max 10 users. <span style="color:var(--red);font-weight:600">UNVIABLE</span> for RevFlow's API-driven backend.<br><br>
+            <strong>Pro Suite ($100/user/mo)</strong> — 5,000 API calls/day. Includes Flows, custom objects, Account/Contact/Opportunity management, AppExchange access. <span style="color:var(--yellow);font-weight:600">POSSIBLE</span> for low-volume SMBs but API limit needs load-testing against RevFlow usage patterns.<br><br>
+            <strong>Enterprise ($165-175/user/mo)</strong> — Unlimited API calls. Advanced workflow automation, territory management, full platform customization. <span style="color:var(--green);font-weight:600">SAFEST</span> option but highest cost.<br><br>
+            <strong>Key question:</strong> Is there an internal-use or lightweight SKU specifically for headless/embedded use cases? Does <strong>SF Go</strong> have a mechanism for reduced-cost provisioning?
+          </div>
+          <div class="q-dash-meta">
+            <span>Surfaces in: Step 2 (Org Provisioning)</span>
+          </div>
+        </div>
+
+        <div class="q-dash-card" style="border-left:3px solid var(--yellow)">
+          <div class="q-dash-top">
+            <div class="q-dash-title">2. Sales Cloud License Requirement</div>
+            <span class="pill py">Needs Decision</span>
+          </div>
+          <div class="q-dash-body">RevFlow requires access to the <strong>Account object</strong> and platform features like <strong>Profiles, Flows, and custom objects</strong>. This is fundamental platform access. The question: is one Sales Cloud license sufficient to unlock this, or can the Integration User license + permission sets provide everything needed?</div>
+          <div class="q-dash-research">
+            The Salesforce Integration User license provides API-only access but may not include standard objects (Account, Opportunity, Product2) without additional licensing. A <strong>single Sales Cloud license</strong> might be required per org to unlock the platform schema. This affects the per-customer cost model significantly. <strong>Needs validation with the Licensing team.</strong>
+          </div>
+          <div class="q-dash-meta">
+            <span>Surfaces in: Step 3 (User Provisioning)</span>
+          </div>
+        </div>
+
+        <div class="q-dash-card" style="border-left:3px solid var(--yellow)">
+          <div class="q-dash-top">
+            <div class="q-dash-title">3. Cost Absorption for Free Tier</div>
+            <span class="pill pr">Needs Decision</span>
+          </div>
+          <div class="q-dash-body">Every free-tier customer gets a real Salesforce org (settled decision: SF Org for all tiers). At scale (10K+ free users), this is the <strong>most expensive unresolved business question</strong>. Who absorbs the infrastructure cost?</div>
+          <div class="q-dash-research">
+            <strong>Options:</strong><br>
+            (a) Salesforce subsidizes as customer acquisition cost — requires finance approval<br>
+            (b) Loss-led for a capped period (e.g. 90 days) — creates churn management challenge<br>
+            (c) Lightweight org edition to reduce per-org cost — needs new SKU from Licensing<br>
+            (d) SF Go mechanism for zero/reduced-cost provisioning — needs SF Go team validation
+          </div>
+          <div class="q-dash-meta">
+            <span>Surfaces in: Step 2 (Org Provisioning)</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Architectural Questions -->
+    <div class="q-section">
+      <div class="q-section-hdr" onclick="toggleSection(this)">
+        <span class="chev open">&#9654;</span>
+        <h3>Architectural / Technical Questions</h3>
+        <span class="pill pa">7 Questions</span>
+      </div>
+      <div class="q-section-body">
+
+        <div class="q-dash-card" style="border-left:3px solid var(--accent)">
+          <div class="q-dash-top">
+            <div class="q-dash-title">1. RevFlow Middleware Server — Scope &amp; Hosting</div>
+            <span class="pill pg">Researched</span>
+          </div>
+          <div class="q-dash-body">The RevFlow Middleware Server orchestrates provisioning (org creation, user setup, Slack wiring) but is <strong>not in the runtime path</strong> — Slack calls SF APIs directly via MCP at runtime. Where is it hosted? What is its availability SLA? How does it manage the pre-warmed org pool?</div>
+          <div class="q-dash-research">
+            <strong>Scope:</strong> Provisioning-only server. Handles signup &rarr; org creation (Signup API) &rarr; integration user setup &rarr; Slack workspace connection. Analogous to <strong>developer.salesforce.com's backend</strong>. Not involved in day-to-day RevFlow operations.<br><br>
+            <strong>Hosting options:</strong> Heroku, AWS, or Salesforce Hyperforce. Needs outbound access to Signup API (org provisioning) and Slack API (workspace wiring).<br><br>
+            <strong>Security:</strong> Stores Signup API credentials, org admin tokens (temporarily during provisioning), and Slack app tokens. Requires vault/secrets management (e.g. AWS Secrets Manager, Heroku Private Spaces).<br><br>
+            <strong>Key distinction:</strong> Middleware is in the <strong>provisioning path only</strong>. At runtime, Slack &rarr; Salesforce MCP directly. This keeps the runtime architecture simple and latency-free.
+          </div>
+          <div class="q-dash-meta">
+            <span>Surfaces in: Steps 1, 2, 3, 4</span>
+          </div>
+        </div>
+
+        <div class="q-dash-card" style="border-left:3px solid var(--accent)">
+          <div class="q-dash-top">
+            <div class="q-dash-title">2. Provisioning SLA</div>
+            <span class="pill py">Needs Decision</span>
+          </div>
+          <div class="q-dash-body">What is the Signup API provisioning latency? If org creation takes minutes, the <strong>pre-warmed pool model</strong> is mandatory for a self-serve freemium experience. Pool management adds operational complexity (monitoring depth, recycling failed orgs, regional distribution).</div>
+          <div class="q-dash-meta">
+            <span>Surfaces in: Step 2 (Org Provisioning)</span>
+          </div>
+        </div>
+
+        <div class="q-dash-card" style="border-left:3px solid var(--accent)">
+          <div class="q-dash-top">
+            <div class="q-dash-title">3. How to Keep Salesforce Invisible</div>
+            <span class="pill pg">Researched</span>
+          </div>
+          <div class="q-dash-body">The core architectural challenge: how do we ensure end users never see, access, or know about the underlying Salesforce org?</div>
+          <div class="q-dash-research">
+            <strong>Solution: Three-layer invisibility model</strong><br><br>
+            <strong>Layer 1 — Integration Users:</strong> The "Minimum Access – API Only Integrations" profile physically prevents UI login. The profile is locked/non-editable. OAuth Client Credentials flow for server-to-server only. When audited, Salesforce displays <em>"Access Restricted for API Only Users."</em><br><br>
+            <strong>Layer 2 — Slack via Salesforce &amp; Revenue Cloud MCP:</strong> All API calls go through Salesforce and Revenue Cloud MCP tools directly from Slack. No Salesforce domain URLs ever appear in the Slack UI. Admin config and user management happen through Block Kit modals.<br><br>
+            <strong>Layer 3 — Headless 360 Platform Direction:</strong> Announced April 15, 2026 at TrailblazerDX. Parker Harris: <em>"Why should you ever log into Salesforce again?"</em> The entire platform is now exposed as 60+ MCP tools and APIs. This is the <strong>strongest architectural validation</strong> for RevFlow's approach — Salesforce itself is moving toward headless.<br><br>
+            <strong>Verdict:</strong> Architecturally sound. Integration Users + MCP-based API access + Headless 360 direction all align. <strong>No fundamental blocker.</strong>
+          </div>
+          <div class="q-dash-meta">
+            <span>Surfaces in: Step 3 (User Provisioning)</span>
+          </div>
+        </div>
+
+        <div class="q-dash-card" style="border-left:3px solid var(--accent)">
+          <div class="q-dash-top">
+            <div class="q-dash-title">4. Seamless Auth Token Refresh</div>
+            <span class="pill py">Needs Decision</span>
+          </div>
+          <div class="q-dash-body">How does Seamless Auth handle token refresh for RevFlow-provisioned orgs (not customer-initiated)? Does RevFlow act as the Connected App? What happens if the refresh token is revoked or the org is suspended? Access tokens expire in ~2 hours; refresh tokens are indefinite.</div>
+          <div class="q-dash-meta">
+            <span>Surfaces in: Steps 3, 4</span>
+          </div>
+        </div>
+
+        <div class="q-dash-card" style="border-left:3px solid var(--accent)">
+          <div class="q-dash-top">
+            <div class="q-dash-title">5. Admin Role Mapping</div>
+            <span class="pill py">Needs Decision</span>
+          </div>
+          <div class="q-dash-body">Slack workspace admin = RevFlow admin is straightforward. But what about complex team structures — multiple approval hierarchies, regional teams, role-based access? How does Slack workspace structure map to the SF role hierarchy?</div>
+          <div class="q-dash-meta">
+            <span>Surfaces in: Step 4</span>
+          </div>
+        </div>
+
+        <div class="q-dash-card" style="border-left:3px solid var(--accent)">
+          <div class="q-dash-top">
+            <div class="q-dash-title">6. Revenue Cloud Auto-Configuration</div>
+            <span class="pill py">Needs Decision</span>
+          </div>
+          <div class="q-dash-body">Can Revenue Cloud Base be fully auto-configured using a <strong>preconfigured templated org</strong> or <strong>Salesforce Go — Revenue Cloud Initial Setup</strong>? Or are there manual setup steps that would break the automated provisioning pipeline?</div>
+          <div class="q-dash-research">
+            RevFlow's onboarding depends on zero-touch configuration. The templated org or SF Go RC Initial Setup must include: RC objects, pricing rules, approval workflows, default product catalog template, permissions. If any RC feature requires manual setup in the SF UI, the invisible-Salesforce model breaks down. The pool should contain orgs that are already provisioned with RC Initial Setup so activation is instant.
+          </div>
+          <div class="q-dash-meta">
+            <span>Surfaces in: Step 2 (Org Provisioning)</span>
+          </div>
+        </div>
+
+        <div class="q-dash-card" style="border-left:3px solid var(--accent)">
+          <div class="q-dash-top">
+            <div class="q-dash-title">7. First-Run Experience Design</div>
+            <span class="pill py">Needs Decision</span>
+          </div>
+          <div class="q-dash-body">The setup wizard (products, pricing, team configuration) must be fully in Slack. How do we guide a customer from "app installed" to "first quote created" entirely within Slack's UI constraints? Seamless App currently lacks an App Home Tab.</div>
+          <div class="q-dash-research">
+            <strong>Constraint:</strong> No App Home Tab available yet (on SSAP roadmap). First-run experience must work via a <strong>dedicated channel + pinned content</strong>, or a structured onboarding message with interactive Block Kit components. Seamless App Home is coming — design should be forward-compatible.
+          </div>
+          <div class="q-dash-meta">
+            <span>Surfaces in: Step 5 (App Ready)</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- End-to-End Flow Summary -->
+    <h2 style="margin-top:32px">End-to-End Onboarding Flow</h2>
+    <div class="mw"><div class="mermaid">
+sequenceDiagram
+    participant Cust as Customer
+    participant LP as Landing Page
+    participant MW as RevFlow Middleware
+    participant SA as Signup API
+    participant Org as SF Org (Invisible)
+    participant Slack as Slack Workspace
+
+    Note over Cust,Slack: Step 1 — Discovery
+    Cust->>LP: Fills out signup form
+    LP->>MW: Workspace info + customer data
+
+    Note over Cust,Slack: Step 2 — Org Provisioning
+    MW->>SA: Request org from pre-warmed pool
+    SA-->>MW: Org ID + credentials (seconds)
+    Note over SA,Org: Preconfigured templated org (RC Initial Setup)
+
+    Note over Cust,Slack: Step 3 — User Provisioning
+    MW->>Org: Create Integration User (API-only)
+    MW->>Org: Assign Permission Sets + JIT user mapping
+
+    Note over Cust,Slack: Step 4 — Slack Auth
+    MW->>Slack: Register Seamless App + tenant mapping
+    MW->>Org: Seamless Auth connection
+    Org-->>Slack: Workspace ↔ Org connected
+
+    Note over Cust,Slack: Step 5 — Ready (Middleware exits)
+    Slack->>Cust: Welcome message + Block Kit UI
+    Note over Cust: "RevFlow is ready!"
+    Note over Slack,Org: Runtime: Slack → SF MCP directly (no middleware)
+    </div></div>
+
+    <p style="margin-top:24px;color:var(--text-tert);font-size:.78rem;text-align:center"><em>New Customer Onboarding Mock &middot; For Leadership, PM, Architecture &amp; Engineering Review &middot; April 2026</em></p>
+  </div>
+
+</div>
+
+<script>
+// ─── Top-level tab switching ───
+const topTabs = document.querySelectorAll('.top-tab');
+const views = document.querySelectorAll('.view');
+topTabs.forEach(tab => tab.addEventListener('click', () => {
+  const target = tab.dataset.view;
+  topTabs.forEach(t => t.classList.remove('on'));
+  tab.classList.add('on');
+  views.forEach(v => v.classList.remove('on'));
+  document.getElementById(target).classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}));
+
+function switchToQuestions() {
+  topTabs.forEach(t => t.classList.remove('on'));
+  topTabs[1].classList.add('on');
+  views.forEach(v => v.classList.remove('on'));
+  document.getElementById('questions').classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── Step navigation ───
+const STEPS = [
+  { num: 1, label: 'Landing Page' },
+  { num: 2, label: 'Org Provisioning' },
+  { num: 3, label: 'User Provisioning' },
+  { num: 4, label: 'Slack Auth' },
+  { num: 5, label: 'Ready' }
+];
+let currentStep = 1;
+
+function buildProgressBar() {
+  const bar = document.getElementById('progressBar');
+  bar.innerHTML = '';
+  STEPS.forEach((s, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'step-dot' + (s.num === currentStep ? ' active' : '') + (s.num < currentStep ? ' done' : '');
+    dot.innerHTML = `<div class="step-num">${s.num < currentStep ? '&#10003;' : s.num}</div><div class="step-label">${s.label}</div>`;
+    dot.addEventListener('click', () => goStep(s.num));
+    bar.appendChild(dot);
+    if (i < STEPS.length - 1) {
+      const line = document.createElement('div');
+      line.className = 'step-line' + (s.num < currentStep ? ' done' : '');
+      bar.appendChild(line);
+    }
+  });
+}
+
+function goStep(n) {
+  currentStep = n;
+  document.querySelectorAll('.step-content').forEach(el => el.classList.remove('on'));
+  document.getElementById('step-' + n).classList.add('on');
+  buildProgressBar();
+  animateProvisioningIfNeeded(n);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+buildProgressBar();
+
+// ─── Provisioning animation (Step 2) ───
+let provAnimated = false;
+function animateProvisioningIfNeeded(step) {
+  if (step !== 2 || provAnimated) return;
+  provAnimated = true;
+  const fill = document.getElementById('provFill');
+  const checks = document.querySelectorAll('#step-2 .prog-check');
+  const widths = [20, 40, 60, 80, 100];
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i >= widths.length) { clearInterval(interval); return; }
+    fill.style.width = widths[i] + '%';
+    if (i < checks.length && checks[i].classList.contains('pending')) {
+      checks[i].classList.remove('pending');
+      checks[i].classList.add('active');
+    }
+    if (i > 0 && checks[i - 1]) {
+      checks[i - 1].classList.remove('active');
+      checks[i - 1].classList.add('done');
+      checks[i - 1].innerHTML = '&#10003;';
+    }
+    i++;
+  }, 800);
+}
+
+// ─── Inline question toggle ───
+function toggleInline(el) {
+  const body = el.nextElementSibling;
+  body.classList.toggle('off');
+  el.querySelector('.chev').classList.toggle('open');
+}
+
+// ─── Questions dashboard section toggle ───
+function toggleSection(el) {
+  const body = el.nextElementSibling;
+  body.classList.toggle('off');
+  el.querySelector('.chev').classList.toggle('open');
+}
+
+// ─── Mermaid init ───
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'default',
+  themeVariables: {
+    primaryColor: '#ede9fe', primaryTextColor: '#1a1d23', primaryBorderColor: '#6353ec',
+    lineColor: '#8892a2', secondaryColor: '#f0f2f5', tertiaryColor: '#f8f9fb',
+    background: '#ffffff', mainBkg: '#f0f2f5', nodeBorder: '#d0d5dd',
+    clusterBkg: '#f5f6f8', clusterBorder: '#e2e5ea', titleColor: '#1a1d23',
+    edgeLabelBackground: '#ffffff', actorBkg: '#f0f2f5', actorBorder: '#6353ec',
+    actorTextColor: '#1a1d23', signalColor: '#4b5563', signalTextColor: '#1a1d23',
+    labelBoxBkgColor: '#ffffff', labelBoxBorderColor: '#e2e5ea', labelTextColor: '#1a1d23',
+    loopTextColor: '#4b5563', noteBkgColor: '#ede9fe', noteBorderColor: '#6353ec',
+    noteTextColor: '#1a1d23',
+  },
+  sequence: { useMaxWidth: true, actorMargin: 50, messageMargin: 40 }
+});
+</script>
+</body>
+</html>

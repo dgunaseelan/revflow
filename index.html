@@ -304,6 +304,38 @@ a{color:var(--accent-lt);text-decoration:none}a:hover{text-decoration:underline}
 
     <!-- ─── STEP 1: Landing Page ─── -->
     <div class="step-content on" id="step-1">
+      <!-- Prerequisites -->
+      <div class="prereq-box" style="margin-bottom:18px">
+        <h3>&#9889; Prerequisites for RevFlow</h3>
+        <div class="prereq-item">
+          <div class="prereq-num">1</div>
+          <div><strong>Slack Business+ or Enterprise+</strong> — Required for Slackbot (AI agent). Business+ has 15 AI conversations/week per user; Enterprise+ is unlimited.</div>
+        </div>
+        <div class="prereq-item">
+          <div class="prereq-num">2</div>
+          <div>
+            <strong>Salesforce Base Edition</strong>
+            <ul style="margin:4px 0 0 16px;font-size:.8rem;line-height:1.5;list-style:none;padding:0">
+              <li><span style="color:var(--green);font-weight:700">&#9679;</span> <strong>Enterprise ($175/user/mo)</strong> — Recommended. Unlimited API calls.</li>
+              <li><span style="color:var(--yellow);font-weight:700">&#9679;</span> <strong>Pro Suite ($100/user/mo)</strong> — Viable. 5K API calls/day. Needs RCG validation.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="prereq-item">
+          <div class="prereq-num">3</div>
+          <div>
+            <strong>Revenue Cloud Growth SKU (+$150/user/mo)</strong> — Add-on for native CPQ, product catalog, subscriptions.
+            <ul style="margin:4px 0 0 16px;font-size:.8rem;line-height:1.5;list-style:none;padding:0">
+              <li><span style="color:var(--yellow);font-weight:700">&#9679;</span> Pro Suite + RCG = <strong>$250/user/mo</strong></li>
+              <li><span style="color:var(--green);font-weight:700">&#9679;</span> Enterprise + RCG = <strong>$325/user/mo</strong></li>
+            </ul>
+          </div>
+        </div>
+        <div style="margin-top:12px;text-align:center">
+          <a href="#" onclick="switchToQuestions();return false" style="font-size:.82rem;font-weight:600;color:var(--accent)">Learn more in the Editions &amp; Prerequisites tab &rarr;</a>
+        </div>
+      </div>
+
       <div class="step-nav" style="margin-bottom:8px">
         <div></div>
         <button class="step-nav-btn primary" onclick="goStep(2)">Next: Org Provisioning &rarr;</button>
@@ -384,38 +416,6 @@ a{color:var(--accent-lt);text-decoration:none}a:hover{text-decoration:underline}
               <p>Settled decision: <strong>Seamless App only</strong> — Custom Slack Apps are deprecated. The RevFlow Middleware handles provisioning orchestration; Slack calls SF APIs directly via MCP at runtime.</p>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Prerequisites -->
-      <div class="prereq-box" style="margin-bottom:18px">
-        <h3>&#9889; Prerequisites for RevFlow</h3>
-        <div class="prereq-item">
-          <div class="prereq-num">1</div>
-          <div><strong>Slack Business+ or Enterprise+</strong> — Required for Slackbot (AI agent). Business+ has 15 AI conversations/week per user; Enterprise+ is unlimited.</div>
-        </div>
-        <div class="prereq-item">
-          <div class="prereq-num">2</div>
-          <div>
-            <strong>Salesforce Base Edition</strong>
-            <ul style="margin:4px 0 0 16px;font-size:.8rem;line-height:1.5;list-style:none;padding:0">
-              <li><span style="color:var(--green);font-weight:700">&#9679;</span> <strong>Enterprise ($175/user/mo)</strong> — Recommended. Unlimited API calls.</li>
-              <li><span style="color:var(--yellow);font-weight:700">&#9679;</span> <strong>Pro Suite ($100/user/mo)</strong> — Viable. 5K API calls/day. Needs RCG validation.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="prereq-item">
-          <div class="prereq-num">3</div>
-          <div>
-            <strong>Revenue Cloud Growth SKU (+$150/user/mo)</strong> — Add-on for native CPQ, product catalog, subscriptions.
-            <ul style="margin:4px 0 0 16px;font-size:.8rem;line-height:1.5;list-style:none;padding:0">
-              <li><span style="color:var(--yellow);font-weight:700">&#9679;</span> Pro Suite + RCG = <strong>$250/user/mo</strong></li>
-              <li><span style="color:var(--green);font-weight:700">&#9679;</span> Enterprise + RCG = <strong>$325/user/mo</strong></li>
-            </ul>
-          </div>
-        </div>
-        <div style="margin-top:12px;text-align:center">
-          <a href="#" onclick="switchToQuestions();return false" style="font-size:.82rem;font-weight:600;color:var(--accent)">Learn more in the Editions &amp; Prerequisites tab &rarr;</a>
         </div>
       </div>
 

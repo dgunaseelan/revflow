@@ -265,7 +265,20 @@ a{color:var(--accent-lt);text-decoration:none}a:hover{text-decoration:underline}
 .summary-item .s-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-tert);font-weight:600;margin-bottom:4px}
 .summary-item .s-value{font-size:.82rem;font-weight:500;color:var(--text)}
 
-@media print{.top-tabs,.step-nav,.progress-bar{display:none}.view,.step-content{display:block!important}}
+/* Dashboard subtabs */
+.dash-tabs{display:flex;gap:4px;margin-bottom:20px;border-bottom:2px solid var(--border);padding-bottom:0}
+.dash-tab{padding:10px 20px;border:none;background:transparent;color:var(--text-sec);cursor:pointer;font-size:.82rem;font-weight:500;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .18s}
+.dash-tab:hover{color:var(--text);background:var(--bg-hover)}
+.dash-tab.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.dash-tab .tab-badge{display:inline-block;font-size:.68rem;padding:1px 7px;border-radius:10px;margin-left:6px;font-weight:600;vertical-align:middle}
+.dash-panel{display:none}
+.dash-panel.on{display:block}
+.prereq-box{background:linear-gradient(135deg,rgba(99,83,236,.06),rgba(52,199,89,.06));border:1.5px solid var(--accent);border-radius:12px;padding:20px 24px;margin-bottom:24px}
+.prereq-box h3{margin:0 0 14px;font-size:1rem;color:var(--accent)}
+.prereq-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:.85rem;line-height:1.5}
+.prereq-item:last-child{margin-bottom:0}
+.prereq-num{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+@media print{.top-tabs,.step-nav,.progress-bar,.dash-tabs{display:none}.view,.step-content,.dash-panel{display:block!important}}
 </style>
 </head>
 <body>
@@ -871,81 +884,449 @@ sequenceDiagram
     <p class="desc">All questions surfaced during the onboarding journey, organized by audience. Each question includes research findings where available.</p>
 
     <div class="q-stats">
-      <div class="q-stat"><div class="val">10</div><div class="lbl">Total Questions</div></div>
-      <div class="q-stat"><div class="val warn">3</div><div class="lbl">Leadership</div></div>
+      <div class="q-stat"><div class="val">9</div><div class="lbl">Total Questions</div></div>
+      <div class="q-stat"><div class="val warn">2</div><div class="lbl">Leadership</div></div>
       <div class="q-stat"><div class="val">7</div><div class="lbl">Architecture</div></div>
       <div class="q-stat"><div class="val crit">3</div><div class="lbl">Researched</div></div>
     </div>
 
-    <!-- Leadership Questions -->
-    <div class="q-section">
-      <div class="q-section-hdr" onclick="toggleSection(this)">
-        <span class="chev open">&#9654;</span>
-        <h3>Leadership Questions</h3>
-        <span class="pill py">3 Questions</span>
+    <!-- Dashboard Subtabs -->
+    <div class="dash-tabs">
+      <button class="dash-tab on" data-panel="dp-editions">Editions &amp; Prerequisites</button>
+      <button class="dash-tab" data-panel="dp-leadership">Leadership Questions <span class="tab-badge" style="background:var(--yellow-bg);color:var(--yellow)">2</span></button>
+      <button class="dash-tab" data-panel="dp-architecture">Architecture Questions <span class="tab-badge" style="background:var(--accent-bg);color:var(--accent)">7</span></button>
+    </div>
+
+    <!-- ═══ TAB 1: Editions & Prerequisites ═══ -->
+    <div class="dash-panel on" id="dp-editions">
+
+    <!-- Prerequisites Executive Summary -->
+    <div class="prereq-box">
+      <h3>&#9889; Prerequisites for RevFlow</h3>
+      <div class="prereq-item">
+        <div class="prereq-num">1</div>
+        <div><strong>Slack Business+ or Enterprise+</strong> — Required for Slackbot (AI agent) access. Business+ supports 15 AI conversations/week per user; Enterprise+ has unlimited. Free and Pro plans do not include Slackbot.</div>
       </div>
-      <div class="q-section-body">
-
-        <div class="q-dash-card" style="border-left:3px solid var(--yellow)">
-          <div class="q-dash-top">
-            <div class="q-dash-title">1. Org Edition &amp; Cost</div>
-            <span class="pill po">Researched</span>
-          </div>
-          <div class="q-dash-body">Enterprise edition org has a cost of <strong>$165-175/user/mo</strong>. Which edition should be provisioned for RevFlow customers?</div>
-          <div class="q-dash-research">
-            <strong>Starter Suite ($25/user/mo)</strong> — No API access. Max 10 users. <span style="color:var(--red);font-weight:600">UNVIABLE</span> for RevFlow's API-driven backend.<br><br>
-            <strong>Pro Suite ($100/user/mo)</strong> — 5,000 API calls/day. Includes Flows, custom objects, Account/Contact/Opportunity management, AppExchange access. <span style="color:var(--yellow);font-weight:600">POSSIBLE</span> for low-volume SMBs but API limit needs load-testing against RevFlow usage patterns.<br><br>
-            <strong>Enterprise ($165-175/user/mo)</strong> — Unlimited API calls. Advanced workflow automation, territory management, full platform customization. <span style="color:var(--green);font-weight:600">SAFEST</span> option but highest cost.<br><br>
-            <strong>Key question:</strong> Is there an internal-use or lightweight SKU specifically for headless/embedded use cases? Does <strong>SF Go</strong> have a mechanism for reduced-cost provisioning?
-          </div>
-          <div class="q-dash-meta">
-            <span>Surfaces in: Step 2 (Org Provisioning)</span>
-          </div>
+      <div class="prereq-item">
+        <div class="prereq-num">2</div>
+        <div>
+          <strong>Salesforce Base Edition</strong> — one of the following:
+          <ul style="margin:6px 0 0 16px;font-size:.83rem;line-height:1.6;list-style:none;padding:0">
+            <li style="margin-bottom:4px"><span style="color:var(--green);font-weight:700">&#9679;</span> <strong>Enterprise ($175/user/mo)</strong> — Recommended. Unlimited API calls, advanced automation, full customization.</li>
+            <li><span style="color:var(--yellow);font-weight:700">&#9679;</span> <strong>Pro Suite ($100/user/mo)</strong> — Viable. 5,000 API calls/day is sufficient. <span style="color:var(--yellow);font-weight:600">Needs validation that RCG add-on can be enabled on Pro Suite.</span></li>
+          </ul>
         </div>
-
-        <div class="q-dash-card" style="border-left:3px solid var(--yellow)">
-          <div class="q-dash-top">
-            <div class="q-dash-title">2. Sales Cloud License Requirement</div>
-            <span class="pill py">Needs Decision</span>
-          </div>
-          <div class="q-dash-body">RevFlow requires access to the <strong>Account object</strong> and platform features like <strong>Profiles, Flows, and custom objects</strong>. This is fundamental platform access. The question: is one Sales Cloud license sufficient to unlock this, or can the Integration User license + permission sets provide everything needed?</div>
-          <div class="q-dash-research">
-            The Salesforce Integration User license provides API-only access but may not include standard objects (Account, Opportunity, Product2) without additional licensing. A <strong>single Sales Cloud license</strong> might be required per org to unlock the platform schema. This affects the per-customer cost model significantly. <strong>Needs validation with the Licensing team.</strong>
-          </div>
-          <div class="q-dash-meta">
-            <span>Surfaces in: Step 3 (User Provisioning)</span>
-          </div>
+      </div>
+      <div class="prereq-item">
+        <div class="prereq-num">3</div>
+        <div>
+          <strong>Revenue Cloud Growth SKU (+$150/user/mo)</strong> — Add-on on top of Sales/Service Cloud. Native CPQ, configurator, advanced product catalog, subscriptions, order capture.
+          <ul style="margin:6px 0 0 16px;font-size:.83rem;line-height:1.6;list-style:none;padding:0">
+            <li style="margin-bottom:4px"><span style="color:var(--yellow);font-weight:700">&#9679;</span> <strong>Pro Suite + RCG = $250/user/mo</strong> — Cost-effective path. <span style="color:var(--yellow);font-weight:600">Pending RCG eligibility validation.</span></li>
+            <li><span style="color:var(--green);font-weight:700">&#9679;</span> <strong>Enterprise + RCG = $325/user/mo</strong> — Safe path. No compatibility concerns.</li>
+          </ul>
         </div>
-
-        <div class="q-dash-card" style="border-left:3px solid var(--yellow)">
-          <div class="q-dash-top">
-            <div class="q-dash-title">3. Cost Absorption for Free Tier</div>
-            <span class="pill pr">Needs Decision</span>
-          </div>
-          <div class="q-dash-body">Every free-tier customer gets a real Salesforce org (settled decision: SF Org for all tiers). At scale (10K+ free users), this is the <strong>most expensive unresolved business question</strong>. Who absorbs the infrastructure cost?</div>
-          <div class="q-dash-research">
-            <strong>Options:</strong><br>
-            (a) Salesforce subsidizes as customer acquisition cost — requires finance approval<br>
-            (b) Loss-led for a capped period (e.g. 90 days) — creates churn management challenge<br>
-            (c) Lightweight org edition to reduce per-org cost — needs new SKU from Licensing<br>
-            (d) SF Go mechanism for zero/reduced-cost provisioning — needs SF Go team validation
-          </div>
-          <div class="q-dash-meta">
-            <span>Surfaces in: Step 2 (Org Provisioning)</span>
-          </div>
-        </div>
-
       </div>
     </div>
 
-    <!-- Architectural Questions -->
+    <!-- ─── Slack Editions ─── -->
     <div class="q-section">
       <div class="q-section-hdr" onclick="toggleSection(this)">
         <span class="chev open">&#9654;</span>
-        <h3>Architectural / Technical Questions</h3>
-        <span class="pill pa">7 Questions</span>
+        <h3>Slack Editions</h3>
+        <span class="pill pb">Platform Context</span>
       </div>
       <div class="q-section-body">
+        <div class="tw" style="margin-bottom:16px"><table>
+          <thead>
+            <tr>
+              <th style="width:16%">Feature</th>
+              <th style="width:21%">Free</th>
+              <th style="width:21%">Pro — $7.25/user/mo</th>
+              <th style="width:21%">Business+ — $15/user/mo</th>
+              <th style="width:21%">Enterprise+ — Contact Sales</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Message History</b></td>
+              <td>90-day limit</td>
+              <td>Unlimited + AI summaries</td>
+              <td>Unlimited + AI summaries</td>
+              <td>Unlimited + AI summaries</td>
+            </tr>
+            <tr>
+              <td><b>App Integrations</b></td>
+              <td>10 apps</td>
+              <td>Unlimited</td>
+              <td>Unlimited</td>
+              <td>Unlimited</td>
+            </tr>
+            <tr>
+              <td><b>Workflows</b></td>
+              <td>&mdash;</td>
+              <td>Unlimited</td>
+              <td>Unlimited + AI steps</td>
+              <td>Unlimited + AI steps</td>
+            </tr>
+            <tr style="background:rgba(255,171,0,.15);border-left:3px solid var(--yellow);font-weight:500">
+              <td><b style="font-size:.82rem">&#9889; Slackbot (AI Agent)</b></td>
+              <td style="color:var(--red);font-weight:700">&#10007; NOT AVAILABLE</td>
+              <td style="color:var(--red);font-weight:700">&#10007; NOT AVAILABLE</td>
+              <td style="color:var(--yellow);font-weight:700">&#10003; 15 conversations/week per user</td>
+              <td style="color:var(--green);font-weight:700">&#10003; Unlimited</td>
+            </tr>
+            <tr>
+              <td><b>AI Search</b></td>
+              <td>&mdash;</td>
+              <td>&mdash;</td>
+              <td>&#10003;</td>
+              <td>&#10003;</td>
+            </tr>
+            <tr>
+              <td><b>CRM Capabilities</b></td>
+              <td>&mdash;</td>
+              <td>&mdash;</td>
+              <td>Bring SF data into channels</td>
+              <td>Bring SF data into channels</td>
+            </tr>
+            <tr>
+              <td><b>Deploy Apps to Slack Infra</b></td>
+              <td>&mdash;</td>
+              <td>&#10003;</td>
+              <td>&#10003;</td>
+              <td>&#10003;</td>
+            </tr>
+            <tr>
+              <td><b>SSO</b></td>
+              <td>&mdash;</td>
+              <td>OAuth (Google)</td>
+              <td>SAML-based</td>
+              <td>Multi-SAML</td>
+            </tr>
+            <tr>
+              <td><b>SCIM User Mgmt</b></td>
+              <td>&mdash;</td>
+              <td>&mdash;</td>
+              <td>&#10003; (incl. guests)</td>
+              <td>&#10003;</td>
+            </tr>
+            <tr>
+              <td><b>Workspaces</b></td>
+              <td>1</td>
+              <td>1</td>
+              <td>1</td>
+              <td>Unlimited</td>
+            </tr>
+            <tr>
+              <td><b>Support</b></td>
+              <td>&mdash;</td>
+              <td>24/7</td>
+              <td>24/7 (4-hr response)</td>
+              <td>24/7 priority (4-hr response)</td>
+            </tr>
+          </tbody>
+        </table></div>
+
+        <div class="co co-s" style="margin:0 0 14px">
+          <div class="ct">RevFlow Impact: Slackbot Only Available on Business+ and Enterprise+</div>
+          <p><strong>Slackbot</strong> (Slack's personal AI agent) is <strong>only available on Business+ ($15/user/mo) and Enterprise+</strong>. Free and Pro plans do not include it. If RevFlow leverages Slackbot for AI-powered revenue workflows, customers on Free/Pro will not have access to those features.</p>
+          <p style="margin-top:8px"><strong>Business+ has a hard limit of 15 Slackbot conversations per week per user.</strong> For high-volume sales teams running multiple quotes, approvals, and deal queries daily, this cap could be restrictive. Enterprise+ has unlimited Slackbot usage.</p>
+          <p style="margin-top:8px"><strong>However:</strong> RevFlow as a <strong>Seamless App</strong> works on all Slack plans (Free, Pro, Business+, Enterprise+). The Slackbot limitation only applies if RevFlow's AI features are delivered <em>through</em> Slackbot rather than through RevFlow's own app interface (Block Kit modals, messages, slash commands). This is an important architectural distinction.</p>
+        </div>
+
+        <div class="co" style="margin:0;border-left:3px solid var(--yellow);background:var(--yellow-bg)">
+          <div class="ct" style="color:var(--yellow)">Open Question: Slackbot vs. Seamless App for AI Features</div>
+          <p>Should RevFlow's AI capabilities (quote generation, deal analysis, pricing recommendations) run through <strong>Slackbot</strong> (limited to Business+/Enterprise+, capped at 15/week on Business+) or through <strong>RevFlow's own Seamless App</strong> (available on all plans, no conversation caps)? This decision determines the minimum Slack plan requirement for RevFlow's full feature set.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Salesforce Editions ─── -->
+    <div class="q-section">
+      <div class="q-section-hdr" onclick="toggleSection(this)">
+        <span class="chev open">&#9654;</span>
+        <h3>Salesforce Editions</h3>
+        <span class="pill pa">Platform Context</span>
+      </div>
+      <div class="q-section-body">
+
+        <h4 style="margin:0 0 8px;font-size:.88rem;color:var(--text-pri)">Base Platform Editions (Sales Cloud / Service Cloud)</h4>
+        <p style="font-size:.78rem;color:var(--text-sec);margin:0 0 12px">Customer must own a Sales or Service Cloud edition. This is the foundation that RevFlow's provisioned org runs on.</p>
+        <div class="tw" style="margin-bottom:20px"><table>
+          <thead>
+            <tr>
+              <th style="width:16%">Feature</th>
+              <th style="width:14%;background:rgba(255,59,48,.08)">Starter Suite — $25/user/mo<br><span style="color:var(--red);font-size:.7rem;font-weight:700">&#10007; UNVIABLE</span></th>
+              <th style="width:14%;background:rgba(255,171,0,.08)">Pro Suite — $100/user/mo<br><span style="color:var(--yellow);font-size:.7rem;font-weight:700">&#9888; VIABLE (validate RCG)</span></th>
+              <th style="width:14%;background:rgba(255,59,48,.08)">Professional — ~$80/user/mo<br><span style="color:var(--red);font-size:.7rem;font-weight:700">&#10007; UNVIABLE (Legacy)</span></th>
+              <th style="width:14%;background:rgba(52,199,89,.1)">Enterprise — $175/user/mo<br><span style="color:var(--green);font-size:.7rem;font-weight:700">&#10003; RECOMMENDED</span></th>
+              <th style="width:14%">Unlimited — $350/user/mo<br><span style="color:var(--accent);font-size:.7rem;font-weight:700">&#10003; VIABLE</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>API Access</b></td>
+              <td style="color:var(--red);font-weight:600">&#10007; No API</td>
+              <td>5,000 calls/day</td>
+              <td style="color:var(--yellow);font-weight:600">&#10007; Not included (add-on)</td>
+              <td>Unlimited</td>
+              <td>Unlimited</td>
+            </tr>
+            <tr>
+              <td><b>Max Users</b></td>
+              <td>10</td>
+              <td>Unlimited</td>
+              <td>Unlimited</td>
+              <td>Unlimited</td>
+              <td>Unlimited</td>
+            </tr>
+            <tr>
+              <td><b>Custom Objects</b></td>
+              <td>Limited</td>
+              <td>&#10003;</td>
+              <td>Limited</td>
+              <td>&#10003;</td>
+              <td>&#10003;</td>
+            </tr>
+            <tr>
+              <td><b>Flows / Automation</b></td>
+              <td>Basic</td>
+              <td>&#10003;</td>
+              <td>Limited scope &amp; volume</td>
+              <td>Advanced</td>
+              <td>Advanced</td>
+            </tr>
+            <tr>
+              <td><b>Quoting (native)</b></td>
+              <td>&mdash;</td>
+              <td>Basic</td>
+              <td>Basic</td>
+              <td>Add-on</td>
+              <td>Included</td>
+            </tr>
+            <tr>
+              <td><b>Product Catalog</b></td>
+              <td>Basic</td>
+              <td>&#10003;</td>
+              <td>&#10003;</td>
+              <td>&#10003;</td>
+              <td>&#10003;</td>
+            </tr>
+            <tr>
+              <td><b>Contracts &amp; Orders</b></td>
+              <td>&mdash;</td>
+              <td>&mdash;</td>
+              <td>Basic</td>
+              <td>Basic</td>
+              <td>&#10003;</td>
+            </tr>
+            <tr>
+              <td><b>AI &amp; Analytics</b></td>
+              <td>&mdash;</td>
+              <td>Basic reports</td>
+              <td>Standard reports</td>
+              <td>Einstein 1</td>
+              <td>Einstein 1 + Copilot</td>
+            </tr>
+            <tr>
+              <td><b>Approval Workflows</b></td>
+              <td>&mdash;</td>
+              <td>Basic</td>
+              <td>&#10003;</td>
+              <td>&#10003;</td>
+              <td>&#10003;</td>
+            </tr>
+            <tr>
+              <td><b>Territory Mgmt</b></td>
+              <td>&mdash;</td>
+              <td>&mdash;</td>
+              <td>&mdash;</td>
+              <td>&#10003;</td>
+              <td>&#10003;</td>
+            </tr>
+            <tr>
+              <td><b>Roles &amp; Profiles</b></td>
+              <td>Limited</td>
+              <td>&#10003;</td>
+              <td>Capped</td>
+              <td>Flexible</td>
+              <td>Flexible</td>
+            </tr>
+            <tr>
+              <td><b>Sandbox</b></td>
+              <td>&mdash;</td>
+              <td>1 Developer</td>
+              <td>1 Developer</td>
+              <td>Full + Developer</td>
+              <td>Full + Multiple</td>
+            </tr>
+            <tr>
+              <td><b>Status</b></td>
+              <td>Current</td>
+              <td>Current (replaced Professional)</td>
+              <td style="color:var(--text-tert)"><em>Legacy — being sunset</em></td>
+              <td>Current</td>
+              <td>Current</td>
+            </tr>
+          </tbody>
+        </table></div>
+
+        <h4 style="margin:0 0 8px;font-size:.88rem;color:var(--text-pri)">Revenue Cloud Add-On SKUs <span style="font-weight:400;font-size:.76rem;color:var(--text-tert)">(requires Sales or Service Cloud base edition)</span></h4>
+        <p style="font-size:.78rem;color:var(--text-sec);margin:0 0 12px">Revenue Cloud is <strong>not a standalone edition</strong> — it is an add-on SKU purchased on top of a Sales Cloud or Service Cloud license. The total per-user cost = base edition + RC SKU.</p>
+        <div class="tw" style="margin-bottom:20px"><table>
+          <thead>
+            <tr>
+              <th style="width:30%">Feature</th>
+              <th style="width:35%">RC Growth — +$150/user/mo</th>
+              <th style="width:35%">RC Advanced — +$200/user/mo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Quoting &amp; Configurator</b></td>
+              <td style="color:var(--green);font-weight:600">&#10003; Native CPQ</td>
+              <td style="color:var(--green);font-weight:600">&#10003; Native CPQ</td>
+            </tr>
+            <tr>
+              <td><b>Advanced Product Catalog</b></td>
+              <td style="color:var(--green);font-weight:600">&#10003;</td>
+              <td style="color:var(--green);font-weight:600">&#10003;</td>
+            </tr>
+            <tr>
+              <td><b>Order Capture</b></td>
+              <td>&#10003;</td>
+              <td>&#10003;</td>
+            </tr>
+            <tr>
+              <td><b>Subscriptions</b></td>
+              <td>&#10003;</td>
+              <td>&#10003;</td>
+            </tr>
+            <tr>
+              <td><b>Contracts &amp; Orders</b></td>
+              <td>&mdash;</td>
+              <td style="color:var(--green);font-weight:600">&#10003; Full lifecycle</td>
+            </tr>
+            <tr>
+              <td><b>Consumption Billing</b></td>
+              <td>&mdash;</td>
+              <td style="color:var(--green);font-weight:600">&#10003;</td>
+            </tr>
+            <tr>
+              <td><b>Invoicing</b></td>
+              <td>&mdash;</td>
+              <td style="color:var(--green);font-weight:600">&#10003;</td>
+            </tr>
+            <tr>
+              <td><b>AI &amp; Analytics</b></td>
+              <td>Basic</td>
+              <td style="color:var(--green);font-weight:600">&#10003; Advanced</td>
+            </tr>
+            <tr style="background:rgba(255,171,0,.08)">
+              <td><b>Total Cost (with Enterprise base)</b></td>
+              <td><b>$175 + $150 = $325/user/mo</b></td>
+              <td><b>$175 + $200 = $375/user/mo</b></td>
+            </tr>
+            <tr style="background:rgba(255,171,0,.08)">
+              <td><b>Total Cost (with Pro Suite base)</b></td>
+              <td><b>$100 + $150 = $250/user/mo</b></td>
+              <td><b>$100 + $200 = $300/user/mo</b></td>
+            </tr>
+          </tbody>
+        </table></div>
+
+        <div class="co co-s" style="margin:0 0 14px">
+          <div class="ct">RevFlow: Which Base Edition + Add-On?</div>
+          <p>RevFlow needs a <strong>base Sales Cloud (or Service Cloud) edition</strong> plus optionally a <strong>Revenue Cloud add-on SKU</strong>. The key tradeoffs:</p>
+          <ul style="margin:10px 0 0 18px;font-size:.82rem;line-height:1.6">
+            <li><strong>Starter Suite ($25) is UNVIABLE</strong> — No API access. RevFlow is entirely API-driven; without REST/SOAP API, it cannot function. Max 10 users is also a hard limit.</li>
+            <li><strong>Professional (~$80) is UNVIABLE</strong> — API access is <strong>not included by default</strong> and requires an add-on purchase. Automation is limited in scope and volume. Custom objects are capped. This edition is also being <strong>sunset in favor of Pro Suite</strong> — not a forward-looking choice for new provisioning.</li>
+            <li><strong>Pro Suite ($100) is VIABLE</strong> — Has API access at <strong>5,000 calls/day</strong>, which is sufficient for typical RevFlow usage. Replaces Professional with better customization, Flows, and custom objects. <span style="color:var(--yellow);font-weight:600">Key open question: can Revenue Cloud Growth (RCG) add-on be enabled on Pro Suite?</span> If yes, Pro Suite + RCG at <strong>$250/user/mo</strong> is a strong cost-effective option.</li>
+            <li><strong>Enterprise ($175) is the SAFE base</strong> — Unlimited API calls, advanced workflow automation, territory management, full customization, Einstein AI. The reliable choice for RevFlow's API-heavy backend.</li>
+            <li><strong>+ Revenue Cloud Growth ($150 add-on)</strong> — Adds native CPQ, configurator, advanced product catalog, subscriptions, and order capture. Purpose-built for what RevFlow does, but brings total to <strong>$325/user/mo</strong> (with Enterprise base) or <strong>$250/user/mo</strong> (with Pro Suite base).</li>
+            <li><strong>Enterprise without RC add-on ($175)</strong> — May have enough native quoting + product catalog for RevFlow's initial feature set without the RC add-on cost. Needs validation on which RC-specific features RevFlow actually requires.</li>
+          </ul>
+        </div>
+
+        <div class="co" style="margin:0;border-left:3px solid var(--yellow);background:var(--yellow-bg)">
+          <div class="ct" style="color:var(--yellow)">Open Question: Base Edition + Revenue Cloud Add-On Strategy</div>
+          <p>Revenue Cloud is <strong>not standalone</strong> — it requires a Sales or Service Cloud base license. Two key questions: <strong>(1)</strong> Can Revenue Cloud Growth be enabled on <strong>Pro Suite ($100)</strong>? If yes, Pro Suite + RCG at <strong>$250/user/mo</strong> is a cost-effective path. If RCG requires Enterprise, the floor is <strong>$325/user/mo</strong>. <strong>(2)</strong> Is there an <strong>internal-use or embedded-partner SKU</strong> that bundles base + RC at reduced cost for RevFlow's headless provisioning model?</p>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- end dp-editions -->
+
+    <!-- ═══ TAB 2: Leadership Questions ═══ -->
+    <div class="dash-panel" id="dp-leadership">
+
+        <div class="q-dash-card" style="border-left:3px solid var(--yellow)">
+          <div class="q-dash-top">
+            <div class="q-dash-title">1. RevFlow Freemium — Slack Plan Eligibility</div>
+            <span class="pill pr">Needs Decision</span>
+          </div>
+          <div class="q-dash-body">Should RevFlow's freemium offering be limited to <strong>Slack Business+ and Enterprise+</strong> customers only?</div>
+          <div class="q-dash-research">
+            <div class="r-label">Why This Matters</div>
+            RevFlow's AI-powered features (quote generation, deal analysis, pricing recommendations) depend on whether they run through <strong>Slackbot</strong> or through <strong>RevFlow's own Seamless App</strong>. This determines the minimum Slack plan for RevFlow.<br><br>
+
+            <strong style="color:var(--green)">Option A: Freemium for Business+ &amp; Enterprise+ only</strong><br>
+            <ul style="margin:4px 0 8px 18px;font-size:.78rem;color:var(--text-sec);line-height:1.5">
+              <li><strong>Business+ ($15/user/mo)</strong> — Slackbot with 15 AI conversations/week per user. SAML SSO, SCIM user management, AI search, daily recaps, AI workflow generation.</li>
+              <li><strong>Enterprise+ (Contact Sales)</strong> — Unlimited Slackbot. Unlimited workspaces, native DLP, enterprise search across apps, custom templates, EMM integration.</li>
+              <li><strong>Advantage:</strong> Higher-value customer segment. More likely to convert to paid RevFlow. Slackbot AI features available to all users.</li>
+              <li><strong>Risk:</strong> Excludes the majority of Slack workspaces (Free + Pro). Limits RevFlow's TAM and viral adoption.</li>
+            </ul>
+
+            <strong style="color:var(--accent)">Option B: Freemium for all Slack plans (Free, Pro, Business+, Enterprise+)</strong><br>
+            <ul style="margin:4px 0 8px 18px;font-size:.78rem;color:var(--text-sec);line-height:1.5">
+              <li>RevFlow as a <strong>Seamless App</strong> works on all Slack plans — no Slackbot dependency. Block Kit modals, messages, and slash commands have no plan restrictions.</li>
+              <li><strong>Free plan limits:</strong> 90-day message history, 10 app integrations, no workflows, 1:1 huddles only.</li>
+              <li><strong>Pro plan ($7.25/user/mo):</strong> Unlimited message history, unlimited apps, unlimited workflows, Slack Connect. No Slackbot.</li>
+              <li><strong>Advantage:</strong> Maximum reach. Viral adoption via Slack's existing install base. AI features delivered through RevFlow's own app (no caps).</li>
+              <li><strong>Risk:</strong> Free-plan customers have 10-app limit (RevFlow counts as 1). No SSO/SCIM — harder to manage at scale. Lower conversion potential.</li>
+            </ul>
+
+            <strong style="color:var(--yellow)">Recommendation:</strong> Support all plans for core RevFlow features (via Seamless App). Gate premium AI features behind Business+ where Slackbot is available. This maximizes reach while preserving upsell leverage.
+          </div>
+          <div class="q-dash-meta">
+            <span>Impacts: Go-to-market strategy, pricing tiers, Slack partnership terms</span>
+          </div>
+        </div>
+
+        <div class="q-dash-card" style="border-left:3px solid var(--yellow)">
+          <div class="q-dash-top">
+            <div class="q-dash-title">2. Salesforce Org Cost — Who Absorbs It?</div>
+            <span class="pill pr">Needs Decision</span>
+          </div>
+          <div class="q-dash-body">Every RevFlow customer gets a real Salesforce org provisioned behind the scenes. At the recommended <strong>Enterprise + RCG stack ($325/user/mo)</strong> — or <strong>Pro Suite + RCG ($250/user/mo)</strong> if validated — who pays for the underlying Salesforce infrastructure?</div>
+          <div class="q-dash-research">
+            <div class="r-label">Cost Scenarios at Scale</div>
+            <div class="tw" style="margin:8px 0 12px"><table>
+              <thead>
+                <tr><th>Scenario</th><th>Pro Suite + RCG</th><th>Enterprise + RCG</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>1 free customer (1 user)</td><td>$250/mo</td><td>$325/mo</td></tr>
+                <tr><td>100 free customers (avg 3 users)</td><td>$75K/mo</td><td>$97.5K/mo</td></tr>
+                <tr><td>1,000 free customers (avg 3 users)</td><td>$750K/mo</td><td>$975K/mo</td></tr>
+                <tr style="background:rgba(255,59,48,.06)"><td><b>10,000 free customers (avg 3 users)</b></td><td><b>$7.5M/mo</b></td><td><b>$9.75M/mo</b></td></tr>
+              </tbody>
+            </table></div>
+
+            <strong>Key exploration area:</strong><br>
+            <p style="margin:8px 0 0;font-size:.82rem;line-height:1.6">The <strong>Salesforce Headless 360</strong> announcement (April 15, 2026, TrailblazerDX) positions the entire Salesforce platform as API-first with 60+ MCP tools — no UI required. We need to explore whether this announcement includes or enables a <strong>headless org SKU at a significantly reduced fee</strong>. If Salesforce is officially moving toward headless consumption, there may be a licensing model specifically designed for API-only / embedded use cases like RevFlow — an org that never needs a UI, never needs a browser seat, and is consumed entirely through MCP. This could dramatically change the cost equation.</p>
+          </div>
+          <div class="q-dash-meta">
+            <span>Impacts: Unit economics, pricing model, Salesforce partnership terms, go/no-go for freemium</span>
+          </div>
+        </div>
+
+    </div><!-- end dp-leadership -->
+
+    <!-- ═══ TAB 3: Architecture Questions ═══ -->
+    <div class="dash-panel" id="dp-architecture">
 
         <div class="q-dash-card" style="border-left:3px solid var(--accent)">
           <div class="q-dash-top">
@@ -1043,8 +1424,7 @@ sequenceDiagram
           </div>
         </div>
 
-      </div>
-    </div>
+    </div><!-- end dp-architecture -->
 
     <!-- End-to-End Flow Summary -->
     <h2 style="margin-top:32px">End-to-End Onboarding Flow</h2>
@@ -1106,6 +1486,17 @@ function switchToQuestions() {
   document.getElementById('questions').classList.add('on');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// ─── Dashboard subtab switching ───
+const dashTabs = document.querySelectorAll('.dash-tab');
+const dashPanels = document.querySelectorAll('.dash-panel');
+dashTabs.forEach(tab => tab.addEventListener('click', () => {
+  const target = tab.dataset.panel;
+  dashTabs.forEach(t => t.classList.remove('on'));
+  tab.classList.add('on');
+  dashPanels.forEach(p => p.classList.remove('on'));
+  document.getElementById(target).classList.add('on');
+}));
 
 // ─── Step navigation ───
 const STEPS = [
